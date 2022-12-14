@@ -2,7 +2,7 @@ package DAO;
 
 import entity.Order;
 import entity.User;
-import exceptiom.DaoException;
+import exception.DaoException;
 import lombok.NoArgsConstructor;
 import util.ConnectionManager;
 
@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @Data
-public class NicConcentrationDto {
+public class NicConcDto {
     Long id;
     String nicConcentration;
 }

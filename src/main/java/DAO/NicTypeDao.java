@@ -1,8 +1,7 @@
 package DAO;
 
-import entity.Base;
 import entity.NicType;
-import exceptiom.DaoException;
+import exception.DaoException;
 import util.ConnectionManager;
 
 import java.sql.Connection;
@@ -23,20 +22,20 @@ public class NicTypeDao implements Dao<Long, NicType> {
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO nicotine_type (nicotine_type)
+            INSERT INTO nicotine_type (nic_type)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
             UPDATE nicotine_type
             SET
-            nicotine_type = ?
+            nic_type = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
             SELECT nt.id,
-                   nt.nicotine_type
+                   nt.nic_type
             FROM nicotine_type nt
                         """;
 

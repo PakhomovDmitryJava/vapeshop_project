@@ -1,7 +1,7 @@
 package DAO;
 
 import entity.Manufacturer;
-import exceptiom.DaoException;
+import exception.DaoException;
 import util.ConnectionManager;
 
 import java.sql.Connection;
@@ -17,26 +17,26 @@ public class ManufacturerDao implements Dao<Long, Manufacturer> {
     private static final ManufacturerDao INSTANCE = new ManufacturerDao();
 
     private static final String DELETE_SQL = """
-            DELETE FROM manufacturer
+            DELETE FROM manufacturer_name
             WHERE id = ?
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO manufacturer ( manufacturer_name)
+            INSERT INTO manufacturer_name ( manufacturer)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE manufacturer
+            UPDATE manufacturer_name
             SET
-            manufacturer_name = ?
+            manufacturer = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
             SELECT m.id,
-                   m.manufacturer_name
-            FROM manufacturer m
+                   m.manufacturer
+            FROM manufacturer_name m
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """

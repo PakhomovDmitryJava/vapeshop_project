@@ -1,0 +1,197 @@
+create table role
+(
+    id    serial primary key,
+    roles varchar(16) not null
+);
+
+insert into role (roles)
+values ('ADMIN'),
+       ('USER');
+
+create table "user"
+(
+    id            serial primary key,
+    first_name    varchar(64)              not null,
+    last_name     varchar(64)              not null,
+    date_of_birth date                     not null,
+    address       varchar(128)             not null,
+    email         varchar(128)             not null,
+    mobile_phone  varchar(64)              not null,
+    "password"    varchar(64)              not null,
+    role_id       int references role (id) not null
+);
+
+insert into "user" (first_name,
+                    last_name,
+                    date_of_birth,
+                    address,
+                    email,
+                    mobile_phone,
+                    "password",
+                    role_id)
+VALUES ('Dima', 'Pakhomov', '1992-09-28', 'Main street 36-1', 'email@gmail.com', 89516513535, 123123, 1),
+       ('Vasya', 'Petrov', '1965-09-28', 'Left street 23-1', 'vas111@gmail.com', 896514526357, 321321, 2),
+       ('Gendolf', 'Grey', '1922-09-28', 'Right street 54-1', 'gendos5444@gmail.com', 89456520312, 789654, 2);
+
+
+create table manufacturer_name
+(
+    id           serial primary key,
+    manufacturer varchar(32) unique not null
+);
+
+create table flavour_type
+(
+    id      serial primary key,
+    flavour varchar(32) unique not null
+);
+
+insert into flavour_type (flavour)
+values ('Fruit'),
+       ('Berries'),
+       ('Tobacco'),
+       ('Fresh'),
+       ('Sour'),
+       ('Baked'),
+       ('Nuts'),
+       ('Drinks'),
+       ('Bubblegum'),
+       ('Candies');
+
+create table liquid_line
+(
+    id   serial primary key,
+    line varchar(32) unique not null
+);
+
+create table base
+(
+    id          serial primary key,
+    pg_vg_ratio varchar(32) unique not null
+);
+
+insert into base (pg_vg_ratio)
+values ('50/50'),
+       ('60/40'),
+       ('65/35'),
+       ('70/30'),
+       ('75/25'),
+       ('80/20');
+
+create table nicotine_type
+(
+    id       serial primary key,
+    nic_type varchar(32) unique not null
+);
+
+insert into nicotine_type (nic_type)
+values ('CLASSIC'),
+       ('SALT'),
+       ('HYBRID'),
+       ('NICOTINE FREE');
+
+create table nicotine_concentration
+(
+    id       serial primary key,
+    nic_conc varchar(32) unique not null
+);
+
+insert into nicotine_concentration (nic_conc)
+values ('0'),
+       ('3'),
+       ('6'),
+       ('9'),
+       ('12'),
+       ('18'),
+       ('20'),
+       ('20 STRONG');
+
+
+
+create table origin_country
+(
+    id      serial primary key,
+    country varchar(32) unique not null
+);
+
+insert into origin_country (country)
+values ('USA'),
+       ('France'),
+       ('GB'),
+       ('Malaysia'),
+       ('China'),
+       ('South Korea'),
+       ('Japan'),
+       ('Russia');
+
+insert into manufacturer_name (manufacturer)
+values ('TABOO'),
+       ('NASTY JUICE'),
+       ('RELL'),
+       ('Voodoo-Lab'),
+       ('KILO'),
+       ('Electro Jam'),
+       ('Pride Vape'),
+       ('Zonk'),
+       ('Smoke Kitchen'),
+       ('The Scandalist'),
+       ('RIOT'),
+       ('Dinner Lady'),
+       ('Doozy'),
+       ('Learmonth');
+
+insert into liquid_line (line)
+values ('Husky'),
+       ('Boshki'),
+       ('Cult'),
+       ('Blaze'),
+       ('Tropical'),
+       ('Sweet Treats'),
+       ('Mishka'),
+       ('Mors'),
+       ('Vaporama'),
+       ('Schizophrenia'),
+       ('Husky Premium'),
+       ('Sweet Sour');
+
+create table liquid
+(
+    id          serial primary key,
+    manuf_id    int references manufacturer_name (id)      not null,
+    line_id     int references liquid_line (id)            not null,
+    flavour_id  int references flavour_type (id)           not null,
+    description varchar(128)                               not null,
+    nic_type_id int references nicotine_type (id)          not null,
+    nic_conc_id int references nicotine_concentration (id) not null,
+    base_id     int references base (id)                   not null,
+    country_id  int references origin_country (id)         not null,
+    price       decimal                                    not null,
+    stock       integer
+);
+
+create table "order"
+(
+    id              serial primary key,
+    user_id         int references "user" (id) on delete cascade not null,
+    date_of_order   timestamp                                    not null,
+    is_paid         boolean                                      not null,
+    date_of_payment timestamp                                    not null
+);
+
+create table order_liquid
+(
+    order_id  int references "order" (id) not null,
+    liquid_id int references liquid (id)  not null,
+    quantity  int                         not null
+);
+
+insert into liquid (manuf_id, line_id, flavour_id, description, nic_type_id, nic_conc_id,
+                    base_id, country_id, price)
+VALUES (1, 1, 1, 'Some description', 2, 2, 1, 3, 300);
+
+insert into "order" (user_id, date_of_order, is_paid, date_of_payment)
+values (1, current_timestamp - interval '1 day', true, current_timestamp - interval '1 day'),
+       (2, current_timestamp, false, current_timestamp - interval '3 day'),
+       (3, current_timestamp - interval '3 day', true, current_timestamp - interval '2 day');
+
+

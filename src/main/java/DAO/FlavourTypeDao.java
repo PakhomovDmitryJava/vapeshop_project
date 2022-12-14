@@ -1,7 +1,7 @@
 package DAO;
 
-import entity.LiquidTaste;
-import exceptiom.DaoException;
+import entity.FlavourType;
+import exception.DaoException;
 import util.ConnectionManager;
 
 import java.sql.Connection;
@@ -13,37 +13,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class LiquidTasteDao implements Dao<Long, LiquidTaste> {
-    private static final LiquidTasteDao INSTANCE = new LiquidTasteDao();
+public class FlavourTypeDao implements Dao<Long, FlavourType> {
+    private static final FlavourTypeDao INSTANCE = new FlavourTypeDao();
 
     private static final String DELETE_SQL = """
-            DELETE FROM liquid_taste
+            DELETE FROM flavour_type
             WHERE id = ?
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO liquid_taste (type_of_taste)
+            INSERT INTO flavour_type (flavour)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE liquid_taste
+            UPDATE flavour_type
             SET
-            type_of_taste = ?
+            flavour = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT lt.id,
-                   lt.type_of_taste
-            FROM liquid_taste lt
+            SELECT ft.id,
+                   ft.flavour
+            FROM flavour_type ft
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE lt.id = ?
+            WHERE ft.id = ?
             """;
 
-    public static LiquidTasteDao getInstance() {
+    public static FlavourTypeDao getInstance() {
         return INSTANCE;
     }
 
@@ -59,27 +59,27 @@ public class LiquidTasteDao implements Dao<Long, LiquidTaste> {
     }
 
     @Override
-    public LiquidTaste save(LiquidTaste liquidTaste) {
+    public FlavourType save(FlavourType flavourType) {
         try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, liquidTaste.getLiquidTaste());
+            preparedStatement.setString(1, flavourType.getFlavourType());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                liquidTaste.setId(generatedKeys.getLong("id"));
+                flavourType.setId(generatedKeys.getLong("id"));
             }
-            return liquidTaste;
+            return flavourType;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
     @Override
-    public void update(LiquidTaste liquidTaste) {
+    public void update(FlavourType flavourType) {
         try (var connetcion = ConnectionManager.get();
              var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, liquidTaste.getLiquidTaste());
-            preparedStatement.setLong(2, liquidTaste.getId());
+            preparedStatement.setString(1, flavourType.getFlavourType());
+            preparedStatement.setLong(2, flavourType.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -87,26 +87,26 @@ public class LiquidTasteDao implements Dao<Long, LiquidTaste> {
     }
 
     @Override
-    public Optional<LiquidTaste> findById(Long id) {
+    public Optional<FlavourType> findById(Long id) {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             var resultSet = preparedStatement.executeQuery();
-            LiquidTaste liquidTaste = null;
+            FlavourType flavourType = null;
             if (resultSet.next()) {
-                liquidTaste = buildBase(resultSet);
+                flavourType = buildBase(resultSet);
             }
-            return Optional.ofNullable(liquidTaste);
+            return Optional.ofNullable(flavourType);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
-    private LiquidTaste buildBase(ResultSet resultSet) {
+    private FlavourType buildBase(ResultSet resultSet) {
         try {
-            return LiquidTaste.builder()
+            return FlavourType.builder()
                     .id(resultSet.getLong("id"))
-                    .liquidTaste(resultSet.getString("type_of_taste"))
+                    .flavourType(resultSet.getString("type_of_taste"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -114,15 +114,15 @@ public class LiquidTasteDao implements Dao<Long, LiquidTaste> {
     }
 
     @Override
-    public List<LiquidTaste> findAll() {
+    public List<FlavourType> findAll() {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = preparedStatement.executeQuery();
-            List<LiquidTaste> liquidTastes = new ArrayList<>();
+            List<FlavourType> flavourTypes = new ArrayList<>();
             while (resultSet.next()) {
-                liquidTastes.add(buildBase(resultSet));
+                flavourTypes.add(buildBase(resultSet));
             }
-            return liquidTastes;
+            return flavourTypes;
         } catch (SQLException e) {
             throw new DaoException(e);
         }

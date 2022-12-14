@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     private Long id;
     private String firstName; //1
@@ -18,4 +20,5 @@ public class User {
     private String email; //5
     private String mobilePhone; //6
     private String password; //7
+    private String role; //8;
 }

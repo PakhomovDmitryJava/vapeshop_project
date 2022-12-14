@@ -1,7 +1,7 @@
 package DAO;
 
 import entity.OriginCountry;
-import exceptiom.DaoException;
+import exception.DaoException;
 import util.ConnectionManager;
 
 import java.sql.Connection;

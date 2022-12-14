@@ -1,7 +1,7 @@
 package DAO;
 
 import entity.Base;
-import exceptiom.DaoException;
+import exception.DaoException;
 import util.ConnectionManager;
 
 import java.sql.Connection;

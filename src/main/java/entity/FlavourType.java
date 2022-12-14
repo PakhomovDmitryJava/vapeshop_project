@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class LiquidLine {
+public class FlavourType {
     private Long id;
-    private String liquidLine;
+    private String flavourType;
 }

@@ -1,7 +1,7 @@
 package DAO;
 
 import entity.LiquidLine;
-import exceptiom.DaoException;
+import exception.DaoException;
 import util.ConnectionManager;
 
 import java.sql.Connection;
@@ -23,19 +23,19 @@ public class LiquidLineDao implements Dao<Long, LiquidLine> {
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO "liquid_line" (liquid_line)
+            INSERT INTO "liquid_line" (line)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
             UPDATE "liquid_line"
             SET
-            liquid_line = ?
+            line = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT ll.id, ll.liquid_line
+            SELECT ll.id, ll.line
             from liquid_line ll
                """;
 

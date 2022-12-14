@@ -1,7 +1,8 @@
 package DAO;
 
 import entity.User;
-import exceptiom.DaoException;
+import exception.DaoException;
+import lombok.NoArgsConstructor;
 import util.ConnectionManager;
 
 import java.sql.Connection;
@@ -14,8 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@NoArgsConstructor
 public class UserDao implements Dao<Long, User> {
     private static final UserDao INSTANCE = new UserDao();
+
+    private final OrderDao orderDao = OrderDao.getInstance();
 
     private static final String DELETE_SQL = """
             DELETE FROM "user"
@@ -23,8 +27,8 @@ public class UserDao implements Dao<Long, User> {
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO "user" (first_name, last_name, date_of_birth, address, email, mobile_phone, "password")
-            VALUES (?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO "user" (first_name, last_name, date_of_birth, address, email, mobile_phone, "password", role_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             """;
 
     private static final String UPDATE_SQL = """
@@ -36,7 +40,8 @@ public class UserDao implements Dao<Long, User> {
             address = ? ,
             email = ? ,
             mobile_phone = ? ,
-            "password" = ?
+            "password" = ?,
+            role_id = ?
             WHERE id = ?
             """;
 
@@ -61,15 +66,6 @@ public class UserDao implements Dao<Long, User> {
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
             WHERE u.id = ?
             """;
-
-    private final OrderDao orderDao = OrderDao.getInstance();
-
-    public UserDao() {
-    }
-
-    public static UserDao getInstance() {
-        return INSTANCE;
-    }
 
     @Override
     public boolean delete(Long id) {
@@ -166,5 +162,7 @@ public class UserDao implements Dao<Long, User> {
             throw new DaoException(e);
         }
     }
-
+    public static UserDao getInstance() {
+        return INSTANCE;
+    }
 }
