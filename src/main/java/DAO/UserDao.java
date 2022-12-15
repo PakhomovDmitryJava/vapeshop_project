@@ -2,20 +2,25 @@ package DAO;
 
 import entity.User;
 import exception.DaoException;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import util.ConnectionManager;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@NoArgsConstructor
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public class UserDao implements Dao<Long, User> {
     private static final UserDao INSTANCE = new UserDao();
 
@@ -54,6 +59,7 @@ public class UserDao implements Dao<Long, User> {
                    u.email        ,
                    u.mobile_phone ,
                    u."password"   ,
+                   u.role_id,
                    o.id,
                    o.user_id,
                    o.date_of_payment,
@@ -113,7 +119,7 @@ public class UserDao implements Dao<Long, User> {
         try (var connetcion = ConnectionManager.get();
              var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
             setUserFields(user, preparedStatement);
-            preparedStatement.setLong(8, user.getId());
+            preparedStatement.setLong(9, user.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -123,11 +129,12 @@ public class UserDao implements Dao<Long, User> {
     private void setUserFields(User user, PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(1, user.getFirstName());
         preparedStatement.setString(2, user.getLastName());
-        preparedStatement.setTimestamp(3, Timestamp.valueOf(user.getDateOfBirth()));
+        preparedStatement.setDate(3, Date.valueOf(user.getDateOfBirth()));
         preparedStatement.setString(4, user.getAddress());
         preparedStatement.setString(5, user.getEmail());
         preparedStatement.setString(6, user.getMobilePhone());
         preparedStatement.setString(7, user.getPassword());
+        preparedStatement.setInt(8, Integer.parseInt(user.getRole()));
     }
 
     @Override
@@ -152,11 +159,12 @@ public class UserDao implements Dao<Long, User> {
                     .id(resultSet.getLong("id"))
                     .firstName(resultSet.getString("first_name"))
                     .lastName(resultSet.getString("last_name"))
-                    .dateOfBirth(resultSet.getTimestamp("date_of_birth").toLocalDateTime())
+                    .dateOfBirth(resultSet.getTimestamp("date_of_birth").toLocalDateTime().toLocalDate())
                     .address(resultSet.getString("address"))
                     .email(resultSet.getString("email"))
                     .mobilePhone(resultSet.getString("mobile_phone"))
                     .password(resultSet.getString("password"))
+                    .role(resultSet.getString("role_id"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);

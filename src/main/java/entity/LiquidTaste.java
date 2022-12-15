@@ -1,12 +1,11 @@
 package entity;
 
-
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
 @Data
-public class Base {
+public class LiquidTaste {
     private Long id;
-    private String prVgRatio;
+    private String liquidTaste;
 }

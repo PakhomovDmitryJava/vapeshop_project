@@ -1,17 +1,17 @@
-import DAO.BaseDao;
+import DAO.LiquidBaseDao;
 import DAO.LiquidDao;
 import DAO.LiquidLineDao;
-import DAO.FlavourTypeDao;
+import DAO.LiquidTasteDao;
 import DAO.ManufacturerDao;
 import DAO.NicConcDao;
 import DAO.NicTypeDao;
 import DAO.OrderDao;
 import DAO.OriginCountryDao;
 import DAO.UserDao;
-import entity.Base;
 import entity.Liquid;
+import entity.LiquidBase;
 import entity.LiquidLine;
-import entity.FlavourType;
+import entity.LiquidTaste;
 import entity.Manufacturer;
 import entity.NicConc;
 import entity.NicType;
@@ -19,109 +19,119 @@ import entity.Order;
 import entity.User;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class DaoRunner {
     public static void main(String[] args) {
-//        saveUserTest();
+        saveUserTest();
+        deleteUserTest(4L);
+        findAllUsersTest();
+        findByIdUserTest(3L);
+        updateUserTest(3L);
+        findByIdUserTest(3L);
 
-//        deleteUserTest(4L);
-
-//      findAllUsersTest();
-
-//        updateUserTest();
-
-//        saveOrderTest();
-
-//        deleteOrderTest(9L);
-//
-//            updateOrderTest();
-//
-
-//        findAllOrdersTest();
-
-//        saveOrderTest();
+        saveOrderTest();
+        deleteOrderTest(4L);
+        findAllOrdersTest();
+        finByIdOrderTest(3L);
+        updateOrderTest(3L);
+        finByIdOrderTest(3L);
 
 
+        saveLiquidTest();
+        deleteLiquidTest(2L);
         findAllLiquidsTest();
-//        findByIdLiquidTest(1L);
-//            updateLiquidTest(2L);
-//                saveLiquidTest();
-//        deleteLiquidTest(1L);
+        findByIdLiquidTest(2L);
+        updateLiquidTest(2L);
+        findByIdLiquidTest(2L);
 
 
-//        findAllLiquidLinesTest();
-//        findByIdLiquidLineTest(1L);
-        //        updateLiquidLineTest();
-////        saveLiquidLineTest();
-//        deleteLiquidLineTest(1L);
+        saveLiquidLineTest("Some New Line");
+        deleteLiquidLineTest(14L);
+        findAllLiquidLinesTest();
+        findByIdLiquidLineTest(1L);
+        updateLiquidLineTest(1L, "Something New");
+        findByIdLiquidLineTest(12L);
 
 
-//        findByIdBaseTest(1L);
-//        findAllBaseTest();
-//        updateBaseTest();
-//        saveBaseTest();
-//        deleteBaseTest();
+        saveBaseTest("85/15");
+        deleteBaseTest(7L);
+        findAllBaseTest();
+        findByIdBaseTest(1L);
+        updateBaseTest();
+        findByIdBaseTest(1L);
 
-//        findByIdBLiquidTasteTest(1L);
-//        findAllLiquidTastesTest();
-//        updateLiquidTasteTest();
-//        saveLiquidTasteTest();
-//        deleteLiquidTasteTest();
+        saveLiquidTasteTest("Forest Zen");
+        deleteLiquidTasteTest(11L);
+        findAllLiquidTastesTest();
+        findByIdLiquidTasteTest(1L);
+        updateLiquidTasteTest(1L, "Shoria");
+        findByIdLiquidTasteTest(1L);
 
-//        findByIdManufacturerTest(1L);
-//        findAllManufacturerTest();
-//        updateManufacturerTest();
-//        saveManufacturerTest();
-//        deleteManufacturerTest();
+        saveManufacturerTest("DUAL");
+        deleteManufacturerTest(15L);
+        findAllManufacturerTest();
+        findByIdManufacturerTest(14L);
+        updateManufacturerTest(14L, "Leeearmonth");
+        findByIdManufacturerTest(14L);
 
-//        findByIdNicConcentrationTest(1L);
-//        findAllNicConcentrationTest();
-//        updateNicConcentrationTest();
-//        saveNicConcentrationTest();
-//        deleteNicConcentrationTest();
+        saveNicConcentrationTest("20 SUPER STRONG");
+        deleteNicConcentrationTest(9L);
+        findAllNicConcentrationTest();
+        findByIdNicConcentrationTest(8L);
+        updateNicConcentrationTest(8L, "20 SUPER HARD");
+        findByIdNicConcentrationTest(8L);
 
-//        findByIdNicTypeTest(1L);
-//        findAllNicTypeTest();
-//        saveNicTypeTest();
-//        updateNicTypeTest();
-//        deleteNicTypeTest();
+        saveNicTypeTest("SOME NEW TYPE1");
+        deleteNicTypeTest(8L);
+        findAllNicTypeTest();
+        findByIdNicTypeTest(8L);
+        updateNicTypeTest(8L, "SOME SUPER NEW TYPE");
+        findByIdNicTypeTest(8L);
+    }
+
+
+    private static void findByIdUserTest(Long id) {
+        System.out.println(UserDao.getInstance().findById(id));
+    }
+
+    private static void finByIdOrderTest(Long id) {
+        System.out.println(OrderDao.getInstance().findById(id));
     }
 
 
     private static void findByIdLiquidLineTest(Long id) {
-        var liquidLineDao = LiquidLineDao.getInstance();
-        var mayBeLiquidLine = liquidLineDao.findById(1L);
+        var mayBeLiquidLine = LiquidLineDao.getInstance().findById(id);
         System.out.println(mayBeLiquidLine);
     }
 
+
     private static void findByIdLiquidTasteTest(Long id) {
-        var liquidTasteDao = FlavourTypeDao.getInstance();
-        var mayBeLiquidTaste = liquidTasteDao.findById(1L);
+        var liquidTasteDao = LiquidTasteDao.getInstance();
+        var mayBeLiquidTaste = liquidTasteDao.findById(id);
         System.out.println(mayBeLiquidTaste);
     }
 
     private static void findByIdBaseTest(Long id) {
-        var baseDao = BaseDao.getInstance();
-        var mayBeBase = baseDao.findById(1L);
+        var baseDao = LiquidBaseDao.getInstance();
+        var mayBeBase = baseDao.findById(id);
         System.out.println(mayBeBase);
     }
 
     private static void findByIdManufacturerTest(Long id) {
-        var manufacturerDao = ManufacturerDao.getInstance();
-        var mayBeManufacturer = manufacturerDao.findById(1L);
+        var mayBeManufacturer = ManufacturerDao.getInstance().findById(id);
         System.out.println(mayBeManufacturer);
     }
 
     private static void findByIdNicConcentrationTest(Long id) {
         var nicConcentrationDao = NicConcDao.getInstance();
-        var mayNicConcentrationDao = nicConcentrationDao.findById(1L);
+        var mayNicConcentrationDao = nicConcentrationDao.findById(id);
         System.out.println(mayNicConcentrationDao);
     }
 
     private static void findByIdNicTypeTest(Long id) {
-        var nicTypeDao = NicTypeDao.getInstance();
-        var mayBeNicType = nicTypeDao.findById(1L);
+        var mayBeNicType = NicTypeDao.getInstance().findById(id);
         System.out.println(mayBeNicType);
     }
 
@@ -131,9 +141,9 @@ public class DaoRunner {
         System.out.println(liquid);
     }
 
-    private static void updateUserTest() {
+    private static void updateUserTest(Long id) {
         var userDao = UserDao.getInstance();
-        var mayBeUser = userDao.findById(5L);
+        var mayBeUser = userDao.findById(id);
         System.out.println(mayBeUser);
 
         mayBeUser.ifPresent(user -> {
@@ -143,9 +153,9 @@ public class DaoRunner {
         });
     }
 
-    private static void updateOrderTest() {
+    private static void updateOrderTest(Long id) {
         var orderDao = OrderDao.getInstance();
-        var mayBeOrder = orderDao.findById(2L);
+        var mayBeOrder = orderDao.findById(id);
         System.out.println(mayBeOrder);
 
         mayBeOrder.ifPresent(order -> {
@@ -157,69 +167,69 @@ public class DaoRunner {
         System.out.println(orderDao.findById(2L));
     }
 
-    private static void updateLiquidLineTest() {
+    private static void updateLiquidLineTest(Long id, String liquidLineName) {
         var liquidLineDao = LiquidLineDao.getInstance();
-        var mayBeLiquidLIne = liquidLineDao.findById(2L);
+        var mayBeLiquidLIne = liquidLineDao.findById(id);
         System.out.println(mayBeLiquidLIne);
 
         mayBeLiquidLIne.ifPresent(liquidLine -> {
-            liquidLine.setLiquidLine("Boshki Boshki");
+            liquidLine.setLiquidLine(liquidLineName);
             liquidLineDao.update(liquidLine);
         });
         System.out.println(liquidLineDao.findById(2L));
     }
 
     public static void updateBaseTest() {
-        var baseDao = BaseDao.getInstance();
+        var baseDao = LiquidBaseDao.getInstance();
         var mayBeBase = baseDao.findById(1L);
         System.out.println(mayBeBase);
 
         mayBeBase.ifPresent(liquidLine -> {
-            liquidLine.setPrVgRatio("50/50");
+            liquidLine.setBase("50/50");
             baseDao.update(liquidLine);
         });
         System.out.println(baseDao.findById(2L));
     }
 
-    private static void updateLiquidTasteTest() {
-        var liquidTasteDao = FlavourTypeDao.getInstance();
-        var mayBeLiquidTaste = liquidTasteDao.findById(1L);
+    private static void updateLiquidTasteTest(Long id, String newName) {
+        var liquidTasteDao = LiquidTasteDao.getInstance();
+        var mayBeLiquidTaste = liquidTasteDao.findById(id);
         System.out.println(mayBeLiquidTaste);
-        mayBeLiquidTaste.ifPresent(flavourType -> {
-            flavourType.setFlavourType("Shoria");
-            liquidTasteDao.update(flavourType);
+        mayBeLiquidTaste.ifPresent(liquidTaste -> {
+            liquidTaste.setLiquidTaste(newName);
+            liquidTasteDao.update(liquidTaste);
         });
         System.out.println(liquidTasteDao.findById(1L));
     }
 
-    private static void updateManufacturerTest() {
+    private static void updateManufacturerTest(Long id, String newManufName) {
         var manufacturerDao = ManufacturerDao.getInstance();
-        var mayBeManufacturer = manufacturerDao.findById(1L);
+        var mayBeManufacturer = manufacturerDao.findById(id);
         System.out.println(mayBeManufacturer);
         mayBeManufacturer.ifPresent(manufacturer -> {
-            manufacturer.setManufacturer("HASKUIIII");
+            manufacturer.setManufacturer(newManufName);
             manufacturerDao.update(manufacturer);
         });
         System.out.println(manufacturerDao.findById(1L));
     }
 
-    private static void updateNicConcentrationTest() {
+    private static void updateNicConcentrationTest(Long id, String newNicConcName) {
         var nicConcentrationDao = NicConcDao.getInstance();
-        var mayBeNicConcentration = nicConcentrationDao.findById(8L);
+        var mayBeNicConcentration = nicConcentrationDao.findById(id);
         System.out.println(mayBeNicConcentration);
         mayBeNicConcentration.ifPresent(concentration -> {
-            concentration.setNicConcentration("20 SUPER STRONG");
+            concentration.setNicConcentration(newNicConcName);
             nicConcentrationDao.update(concentration);
         });
         System.out.println(nicConcentrationDao.findById(8L));
     }
 
-    private static void updateNicTypeTest() {
+    private static void updateNicTypeTest(Long id, String renamedNicType) {
         var niceType = NicTypeDao.getInstance();
-        var mayBeNicType = niceType.findById(5L);
+        var mayBeNicType = niceType.findById(id);
         System.out.println(mayBeNicType);
         mayBeNicType.ifPresent(nicType -> {
-            nicType.setNicType("SUPER DUPER NEW");
+            nicType.setNicType(renamedNicType);
             niceType.update(nicType);
         });
         System.out.println(niceType.findById(5L));
@@ -238,73 +248,42 @@ public class DaoRunner {
     }
 
     private static void saveUserTest() {
-        var savedUser = UserDao.getInstance().save(User.builder()
-                .firstName("Petr")
-                .lastName("Petr")
-                .dateOfBirth(LocalDateTime.of(1991, 2, 2, 0, 0))
-                .address("Petr")
-                .email("Petr@af.com")
-                .mobilePhone(String.valueOf(895165455547L))
-                .password("123123")
-                .build());
+        var savedUser = UserDao.getInstance().save(User.builder().firstName("Petr").lastName("Petr").dateOfBirth(LocalDate.from(LocalDateTime.of(1991, 2, 2, 0, 0))).address("Petr").email("Petr@af.com").mobilePhone(String.valueOf(895165455547L)).password("123123").role("2").build());
         System.out.println(savedUser);
     }
 
     private static void saveOrderTest() {
-        var savedOrder = OrderDao.getInstance().save(Order.builder()
-                .user(UserDao.getInstance().findById(2L).orElse(null))
-                .orderDate(LocalDateTime.of(2022, 12, 12, 0, 0))
-                .isPaid(false)
-                .paymentDate(LocalDateTime.of(0, 1, 1, 0, 0))
-                .build());
+        var savedOrder = OrderDao.getInstance().save(Order.builder().user(UserDao.getInstance().findById(2L).orElse(null)).orderDate(LocalDateTime.of(2022, 12, 12, 0, 0)).isPaid(false).paymentDate(LocalDateTime.of(0, 1, 1, 0, 0)).build());
         System.out.println(savedOrder);
     }
 
-    private static void saveLiquidLineTest() {
-        var savedLiquidLine = LiquidLineDao.getInstance().save(
-                LiquidLine.builder()
-                        .liquidLine("Sweet Sour")
-                        .build());
+    private static void saveLiquidLineTest(String liquidLineName) {
+        var savedLiquidLine = LiquidLineDao.getInstance().save(LiquidLine.builder().liquidLine(liquidLineName).build());
         System.out.println(savedLiquidLine);
     }
 
-    private static void saveLiquidTasteTest() {
-        var savedLiquidTaste = FlavourTypeDao.getInstance().save(FlavourType.builder()
-                .flavourType("Forest home").
-                build());
+    private static void saveLiquidTasteTest(String newLiquidLine) {
+        var savedLiquidTaste = LiquidTasteDao.getInstance().save(LiquidTaste.builder().liquidTaste(newLiquidLine).build());
         System.out.println(savedLiquidTaste);
     }
 
-    private static void saveBaseTest() {
-        var savedBase = BaseDao.getInstance().save(
-                Base.builder()
-                        .prVgRatio("65/35")
-                        .build());
+    private static void saveBaseTest(String newBaseName) {
+        var savedBase = LiquidBaseDao.getInstance().save(LiquidBase.builder().base(newBaseName).build());
         System.out.println(savedBase);
     }
 
-    private static void saveManufacturerTest() {
-        var savedManufacturer = ManufacturerDao.getInstance().save(
-                Manufacturer.builder()
-                        .manufacturer("BOSHKIIIOO")
-                        .build());
+    private static void saveManufacturerTest(String newManufacturerName) {
+        var savedManufacturer = ManufacturerDao.getInstance().save(Manufacturer.builder().manufacturer(newManufacturerName).build());
         System.out.println(savedManufacturer);
     }
 
-    private static void saveNicConcentrationTest() {
-        var savedNicConcentration = NicConcDao.getInstance().save(
-                NicConc.builder()
-                        .nicConcentration("20 SUPER DUPER STRONG")
-                        .build()
-        );
+    private static void saveNicConcentrationTest(String newConc) {
+        var savedNicConcentration = NicConcDao.getInstance().save(NicConc.builder().nicConcentration(newConc).build());
         System.out.println(savedNicConcentration);
     }
 
-    private static void saveNicTypeTest() {
-        var savedNicType = NicTypeDao.getInstance().save(
-                NicType.builder()
-                        .nicType("NEW TYPE OF NIC!")
-                        .build());
+    private static void saveNicTypeTest(String newNicType) {
+        var savedNicType = NicTypeDao.getInstance().save(NicType.builder().nicType(newNicType).build());
         System.out.println(savedNicType);
     }
 
@@ -313,15 +292,13 @@ public class DaoRunner {
                 Liquid.builder()
                         .manufacturer(ManufacturerDao.getInstance().findById(1L).orElse(null))
                         .liquidLine(LiquidLineDao.getInstance().findById(2L).orElse(null))
-                        .flavourType(FlavourTypeDao.getInstance().findById(1L).orElse(null))
+                        .liquidTaste(LiquidTasteDao.getInstance().findById(1L).orElse(null))
                         .description("This is the best liquid!")
                         .nicType(NicTypeDao.getInstance().findById(1L).orElse(null))
                         .nicConc(NicConcDao.getInstance().findById(2L).orElse(null))
-                        .base(BaseDao.getInstance().findById(1L).orElse(null))
+                        .liquidBase(LiquidBaseDao.getInstance().findById(1L).orElse(null))
                         .originCountry(OriginCountryDao.getInstance().findById(1L).orElse(null))
-                        .price(BigDecimal.valueOf(666))
-                        .stock(333L)
-                        .build());
+                        .price(BigDecimal.valueOf(666)).stock(333L).build());
         System.out.println(savedLiquid);
     }
 
@@ -332,27 +309,30 @@ public class DaoRunner {
     }
 
     private static void deleteLiquidTest(Long id) {
-        var liquidDao = LiquidDao.getInstance();
-        var deletedLiquid = liquidDao.delete(1L);
+        var deletedLiquid = LiquidDao.getInstance().delete(id);
         System.out.println(deletedLiquid);
     }
 
-    private static void deleteBaseTest() {
-        var baseDao = BaseDao.getInstance();
-        var deletedBase = baseDao.delete(6L);
+    private static void deleteBaseTest(Long id) {
+        var deletedBase = LiquidBaseDao.getInstance().delete(id);
         System.out.println(deletedBase);
     }
 
-    private static void deleteLiquidTasteTest() {
-        var liquidTasteDao = FlavourTypeDao.getInstance();
-        var deletedTaste = liquidTasteDao.delete(11L);
+    private static void deleteLiquidTasteTest(Long id) {
+        var deletedTaste = LiquidTasteDao.getInstance().delete(id);
         System.out.println(deletedTaste);
     }
 
-    private static void deleteNicConcentrationTest() {
-        var nicConcentrationDao = NicConcDao.getInstance();
-        var deletedNicConcentration = nicConcentrationDao.delete(8L);
+    private static void deleteNicConcentrationTest(Long id) {
+        var deletedNicConcentration = NicConcDao.getInstance().delete(id);
         System.out.println(deletedNicConcentration);
+    }
+
+    private static void findAllUsersTest() {
+        var users = UserDao.getInstance().findAll();
+        for (User user : users) {
+            System.out.println(user);
+        }
     }
 
     private static void findAllOrdersTest() {
@@ -371,16 +351,16 @@ public class DaoRunner {
 
 
     private static void findAllBaseTest() {
-        var baseLines = BaseDao.getInstance().findAll();
-        for (Base baseLine : baseLines) {
-            System.out.println(baseLine);
+        var baseLines = LiquidBaseDao.getInstance().findAll();
+        for (LiquidBase liquidBaseLine : baseLines) {
+            System.out.println(liquidBaseLine);
         }
     }
 
     private static void findAllLiquidTastesTest() {
-        var liquidTastes = FlavourTypeDao.getInstance().findAll();
-        for (FlavourType flavourType : liquidTastes) {
-            System.out.println(flavourType);
+        var liquidTastes = LiquidTasteDao.getInstance().findAll();
+        for (LiquidTaste liquidTaste : liquidTastes) {
+            System.out.println(liquidTaste);
         }
     }
 
@@ -414,25 +394,23 @@ public class DaoRunner {
 
     private static void deleteOrderTest(Long id) {
         var orderDao = OrderDao.getInstance();
-        var deleteResult = orderDao.delete(6L);
+        var deleteResult = orderDao.delete(id);
         System.out.println(deleteResult);
     }
 
     private static void deleteLiquidLineTest(Long id) {
         var liquidLineDao = LiquidLineDao.getInstance();
-        var deleteResult = liquidLineDao.delete(12L);
+        var deleteResult = liquidLineDao.delete(id);
         System.out.println(deleteResult);
     }
 
-    private static void deleteManufacturerTest() {
-        var manufacturerDao = ManufacturerDao.getInstance();
-        var deletedManufacturer = manufacturerDao.delete(16L);
+    private static void deleteManufacturerTest(Long id) {
+        var deletedManufacturer = ManufacturerDao.getInstance().delete(id);
         System.out.println(deletedManufacturer);
     }
 
-    private static void deleteNicTypeTest() {
-        var nicTypeDao = NicTypeDao.getInstance();
-        var deletedNicType = nicTypeDao.delete(7L);
+    private static void deleteNicTypeTest(Long id) {
+        var deletedNicType = NicTypeDao.getInstance().delete(id);
         System.out.println(deletedNicType);
     }
 }

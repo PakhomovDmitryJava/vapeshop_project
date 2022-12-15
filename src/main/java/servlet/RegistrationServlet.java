@@ -1,5 +1,6 @@
 package servlet;
 
+import DAO.RoleDao;
 import dto.CreateUserDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,14 +10,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import service.UserService;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
 
     private final UserService userService = UserService.getInstance();
+    private final RoleDao roleDao = RoleDao.getInstance();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+        req.setAttribute("roles",roleDao.findAll());
     }
 
     @Override
@@ -29,6 +32,7 @@ public class RegistrationServlet extends HttpServlet {
                 .email(req.getParameter("email"))
                 .mobilePhone(req.getParameter("mobilePhone"))
                 .password(req.getParameter("password"))
+                .role(req.getParameter("role"))
                 .build();
 
         userService.create(createUserDto);

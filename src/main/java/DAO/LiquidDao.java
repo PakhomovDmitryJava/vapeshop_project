@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@NoArgsConstructor
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public class LiquidDao implements Dao<Long, Liquid> {
     private static final LiquidDao INSTANCE = new LiquidDao();
 
@@ -24,7 +26,7 @@ public class LiquidDao implements Dao<Long, Liquid> {
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO "liquid" (manuf_id, line_id, flavour_id, description, nic_type_id, nic_conc_id, base_id, country_id, price)
+            INSERT INTO "liquid" (manuf_id, line_id, taste_id, description, nic_type_id, nic_conc_id, base_id, country_id, price, stock)
             VALUES (?,?,?,?,?,?,?,?,?,?);
             """;
 
@@ -33,7 +35,7 @@ public class LiquidDao implements Dao<Long, Liquid> {
             SET
             manuf_id = ? ,
             line_id = ? ,
-            flavour_id = ? ,
+            taste_id = ? ,
             description = ? ,
             nic_type_id = ? ,
             nic_conc_id = ? ,
@@ -47,14 +49,14 @@ public class LiquidDao implements Dao<Long, Liquid> {
 
     /*переписать*/
     private static final String FIND_ALL_SQL = """  
-            SELECT id, manuf_id, line_id, flavour_id, description, nic_type_id, nic_conc_id, base_id, country_id, price, stock
+            SELECT id, manuf_id, line_id, taste_id, description, nic_type_id, nic_conc_id, base_id, country_id, price, stock
             from liquid l
                /*      join manufacturer m on m.id = l.manufacturer_id
                      join liquid_line ll on ll.id = l.liquid_line_id
                      join liquid_taste lt on lt.id = l.liquid_taste_id
                      join nicotine_type nt on nt.id = l.nicotine_type_id
                      join nicotine_concentration nc on nc.id = l.nicotine_concentration_id
-                     join base b on b.id = l.base_id
+                     join liquidBase b on b.id = l.base_id
                      join origin_country oc on oc.id = l.country_id*/
                 """;
 
@@ -63,10 +65,10 @@ public class LiquidDao implements Dao<Long, Liquid> {
             """;
     private final ManufacturerDao manufacturerDao = ManufacturerDao.getInstance();
     private final LiquidLineDao liquidLineDao = LiquidLineDao.getInstance();
-    private final FlavourTypeDao flavourTypeDao = FlavourTypeDao.getInstance();
+    private final LiquidTasteDao liquidTasteDao = LiquidTasteDao.getInstance();
     private final NicTypeDao nicTypeDao = NicTypeDao.getInstance();
     private final NicConcDao nicConcDao = NicConcDao.getInstance();
-    private final BaseDao baseDao = BaseDao.getInstance();
+    private final LiquidBaseDao liquidBaseDao = LiquidBaseDao.getInstance();
     private final OriginCountryDao originCountryDao = OriginCountryDao.getInstance();
 
     public static LiquidDao getInstance() {
@@ -132,13 +134,13 @@ public class LiquidDao implements Dao<Long, Liquid> {
         try {
             return Liquid.builder()
                     .id(resultSet.getLong("id"))
-                    .manufacturer(manufacturerDao.findById(resultSet.getLong("manufacturer_id")).orElse(null))
-                    .liquidLine(liquidLineDao.findById(resultSet.getLong("liquid_line_id")).orElse(null))
-                    .flavourType(flavourTypeDao.findById(resultSet.getLong("liquid_taste_id")).orElse(null))
+                    .manufacturer(manufacturerDao.findById(resultSet.getLong("manuf_id")).orElse(null))
+                    .liquidLine(liquidLineDao.findById(resultSet.getLong("line_id")).orElse(null))
+                    .liquidTaste(liquidTasteDao.findById(resultSet.getLong("taste_id")).orElse(null))
                     .description(resultSet.getString("description"))
-                    .nicType(nicTypeDao.findById(resultSet.getLong("nicotine_type_id")).orElse(null))
-                    .nicConc(nicConcDao.findById(resultSet.getLong("nicotine_concentration_id")).orElse(null))
-                    .base(baseDao.findById(resultSet.getLong("base_id")).orElse(null))
+                    .nicType(nicTypeDao.findById(resultSet.getLong("nic_type_id")).orElse(null))
+                    .nicConc(nicConcDao.findById(resultSet.getLong("nic_conc_id")).orElse(null))
+                    .liquidBase(liquidBaseDao.findById(resultSet.getLong("base_id")).orElse(null))
                     .originCountry(originCountryDao.findById(resultSet.getLong("country_id")).orElse(null))
                     .price((resultSet.getBigDecimal("price")))
                     .stock(resultSet.getLong("stock"))
@@ -167,11 +169,11 @@ public class LiquidDao implements Dao<Long, Liquid> {
     private void setLiquidFields(Liquid liquid, PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setLong(1, liquid.getManufacturer().getId());
         preparedStatement.setLong(2, liquid.getLiquidLine().getId());
-        preparedStatement.setLong(3, liquid.getFlavourType().getId());
+        preparedStatement.setLong(3, liquid.getLiquidTaste().getId());
         preparedStatement.setString(4, liquid.getDescription());
         preparedStatement.setLong(5, liquid.getNicType().getId());
         preparedStatement.setLong(6, liquid.getNicConc().getId());
-        preparedStatement.setLong(7, liquid.getBase().getId());
+        preparedStatement.setLong(7, liquid.getLiquidBase().getId());
         preparedStatement.setLong(8, liquid.getOriginCountry().getId());
         preparedStatement.setBigDecimal(9, liquid.getPrice());
         preparedStatement.setLong(10, liquid.getStock());

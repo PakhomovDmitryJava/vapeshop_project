@@ -2,6 +2,7 @@ package DAO;
 
 import entity.Manufacturer;
 import exception.DaoException;
+import lombok.NoArgsConstructor;
 import util.ConnectionManager;
 
 import java.sql.Connection;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public class ManufacturerDao implements Dao<Long, Manufacturer> {
     private static final ManufacturerDao INSTANCE = new ManufacturerDao();
 
@@ -107,7 +111,7 @@ public class ManufacturerDao implements Dao<Long, Manufacturer> {
         try {
             return Manufacturer.builder()
                     .id(resultSet.getLong("id"))
-                    .manufacturer(resultSet.getString("manufacturer_name"))
+                    .manufacturer(resultSet.getString("manufacturer"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);

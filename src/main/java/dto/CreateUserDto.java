@@ -15,4 +15,5 @@ public class CreateUserDto {
     String email;
     String mobilePhone;
     String password;
+    String role;
 }

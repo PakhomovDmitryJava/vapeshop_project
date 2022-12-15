@@ -1,10 +1,10 @@
-create table role
+create table roles
 (
     id    serial primary key,
-    roles varchar(16) not null
+    role varchar(16) not null
 );
 
-insert into role (roles)
+insert into roles (role)
 values ('ADMIN'),
        ('USER');
 
@@ -18,7 +18,7 @@ create table "user"
     email         varchar(128)             not null,
     mobile_phone  varchar(64)              not null,
     "password"    varchar(64)              not null,
-    role_id       int references role (id) not null
+    role_id       int references roles (id) not null
 );
 
 insert into "user" (first_name,
@@ -33,20 +33,35 @@ VALUES ('Dima', 'Pakhomov', '1992-09-28', 'Main street 36-1', 'email@gmail.com',
        ('Vasya', 'Petrov', '1965-09-28', 'Left street 23-1', 'vas111@gmail.com', 896514526357, 321321, 2),
        ('Gendolf', 'Grey', '1922-09-28', 'Right street 54-1', 'gendos5444@gmail.com', 89456520312, 789654, 2);
 
-
 create table manufacturer_name
 (
     id           serial primary key,
     manufacturer varchar(32) unique not null
 );
 
-create table flavour_type
+insert into manufacturer_name (manufacturer)
+values ('TABOO'),
+       ('NASTY JUICE'),
+       ('RELL'),
+       ('Voodoo-Lab'),
+       ('KILO'),
+       ('Electro Jam'),
+       ('Pride Vape'),
+       ('Zonk'),
+       ('Smoke Kitchen'),
+       ('The Scandalist'),
+       ('RIOT'),
+       ('Dinner Lady'),
+       ('Doozy'),
+       ('Learmonth');
+
+create table liquid_taste
 (
     id      serial primary key,
-    flavour varchar(32) unique not null
+    taste varchar(32) unique not null
 );
 
-insert into flavour_type (flavour)
+insert into liquid_taste (taste)
 values ('Fruit'),
        ('Berries'),
        ('Tobacco'),
@@ -64,13 +79,27 @@ create table liquid_line
     line varchar(32) unique not null
 );
 
-create table base
+insert into liquid_line (line)
+values ('Husky'),
+       ('Boshki'),
+       ('Cult'),
+       ('Blaze'),
+       ('Tropical'),
+       ('Sweet Treats'),
+       ('Mishka'),
+       ('Mors'),
+       ('Vaporama'),
+       ('Schizophrenia'),
+       ('Husky Premium'),
+       ('Sweet Sour');
+
+create table liquid_base
 (
     id          serial primary key,
-    pg_vg_ratio varchar(32) unique not null
+    base varchar(32) unique not null
 );
 
-insert into base (pg_vg_ratio)
+insert into liquid_base (base)
 values ('50/50'),
        ('60/40'),
        ('65/35'),
@@ -106,8 +135,6 @@ values ('0'),
        ('20'),
        ('20 STRONG');
 
-
-
 create table origin_country
 (
     id      serial primary key,
@@ -124,46 +151,16 @@ values ('USA'),
        ('Japan'),
        ('Russia');
 
-insert into manufacturer_name (manufacturer)
-values ('TABOO'),
-       ('NASTY JUICE'),
-       ('RELL'),
-       ('Voodoo-Lab'),
-       ('KILO'),
-       ('Electro Jam'),
-       ('Pride Vape'),
-       ('Zonk'),
-       ('Smoke Kitchen'),
-       ('The Scandalist'),
-       ('RIOT'),
-       ('Dinner Lady'),
-       ('Doozy'),
-       ('Learmonth');
-
-insert into liquid_line (line)
-values ('Husky'),
-       ('Boshki'),
-       ('Cult'),
-       ('Blaze'),
-       ('Tropical'),
-       ('Sweet Treats'),
-       ('Mishka'),
-       ('Mors'),
-       ('Vaporama'),
-       ('Schizophrenia'),
-       ('Husky Premium'),
-       ('Sweet Sour');
-
 create table liquid
 (
     id          serial primary key,
     manuf_id    int references manufacturer_name (id)      not null,
     line_id     int references liquid_line (id)            not null,
-    flavour_id  int references flavour_type (id)           not null,
+    taste_id  int references liquid_taste (id)           not null,
     description varchar(128)                               not null,
     nic_type_id int references nicotine_type (id)          not null,
     nic_conc_id int references nicotine_concentration (id) not null,
-    base_id     int references base (id)                   not null,
+    base_id     int references liquid_base (id)                   not null,
     country_id  int references origin_country (id)         not null,
     price       decimal                                    not null,
     stock       integer
@@ -185,7 +182,7 @@ create table order_liquid
     quantity  int                         not null
 );
 
-insert into liquid (manuf_id, line_id, flavour_id, description, nic_type_id, nic_conc_id,
+insert into liquid (manuf_id, line_id, taste_id, description, nic_type_id, nic_conc_id,
                     base_id, country_id, price)
 VALUES (1, 1, 1, 'Some description', 2, 2, 1, 3, 300);
 

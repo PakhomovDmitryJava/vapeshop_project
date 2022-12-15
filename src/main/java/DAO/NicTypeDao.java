@@ -2,6 +2,7 @@ package DAO;
 
 import entity.NicType;
 import exception.DaoException;
+import lombok.NoArgsConstructor;
 import util.ConnectionManager;
 
 import java.sql.Connection;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public class NicTypeDao implements Dao<Long, NicType> {
     private static final NicTypeDao INSTANCE = new NicTypeDao();
 
@@ -106,7 +110,7 @@ public class NicTypeDao implements Dao<Long, NicType> {
         try {
             return NicType.builder()
                     .id(resultSet.getLong("id"))
-                    .nicType(resultSet.getString("nicotine_type"))
+                    .nicType(resultSet.getString("nic_type"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);

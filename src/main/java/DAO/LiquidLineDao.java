@@ -2,6 +2,7 @@ package DAO;
 
 import entity.LiquidLine;
 import exception.DaoException;
+import lombok.NoArgsConstructor;
 import util.ConnectionManager;
 
 import java.sql.Connection;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public class LiquidLineDao implements Dao<Long, LiquidLine> {
 
     private static final LiquidLineDao INSTANCE = new LiquidLineDao();
@@ -106,7 +110,7 @@ public class LiquidLineDao implements Dao<Long, LiquidLine> {
         try {
             return LiquidLine.builder()
                     .id(resultSet.getLong("id"))
-                    .liquidLine(resultSet.getString("liquid_line"))
+                    .liquidLine(resultSet.getString("line"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);

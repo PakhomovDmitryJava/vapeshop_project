@@ -16,8 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static lombok.AccessLevel.PRIVATE;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = PRIVATE)
 public class OrderDao implements Dao<Long, Order> {
     private static final OrderDao INSTANCE = new OrderDao();
     private static final String DELETE_SQL = """
@@ -142,7 +143,7 @@ public class OrderDao implements Dao<Long, Order> {
                     .id(resultSet.getLong("id"))
                     .firstName(resultSet.getString("first_name"))
                     .lastName(resultSet.getString("last_name"))
-                    .dateOfBirth(resultSet.getTimestamp("date_of_birth").toLocalDateTime())
+                    .dateOfBirth(resultSet.getTimestamp("date_of_birth").toLocalDateTime().toLocalDate())
                     .address(resultSet.getString("address"))
                     .email(resultSet.getString("email"))
                     .mobilePhone(resultSet.getString("mobile_phone"))

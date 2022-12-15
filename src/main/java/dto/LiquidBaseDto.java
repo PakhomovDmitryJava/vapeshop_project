@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @Data
-public class BaseDto {
+public class LiquidBaseDto {
     Long id;
-    String prVgRatio;
+    String base;
 }

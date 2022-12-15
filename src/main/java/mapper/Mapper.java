@@ -1,4 +1,4 @@
-package service.mapper;
+package mapper;
 
 public interface Mapper<F, T> {
 

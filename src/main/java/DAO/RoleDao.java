@@ -1,6 +1,7 @@
 package DAO;
 
-import entity.NicConc;
+import entity.Role;
+import entity.Role;
 import exception.DaoException;
 import lombok.NoArgsConstructor;
 import util.ConnectionManager;
@@ -17,43 +18,45 @@ import java.util.Optional;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class NicConcDao implements Dao<Long, NicConc> {
-    private static final NicConcDao INSTANCE = new NicConcDao();
+public class RoleDao implements Dao<Long, Role>{
+
+    private static final RoleDao INSTANCE = new RoleDao();
 
     private static final String DELETE_SQL = """
-            DELETE FROM nicotine_concentration
+            DELETE FROM roles
             WHERE id = ?
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO nicotine_concentration (nic_conc)
+            INSERT INTO roles (role)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE nicotine_concentration
+            UPDATE roles
             SET
-            nic_conc = ?
+            role = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT nc.id,
-                   nc.nic_conc
-            FROM nicotine_concentration nc
+            SELECT r.id,
+                   r.role
+            FROM roles r
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE nc.id = ?
+            WHERE r.id = ?
             """;
 
-    public static NicConcDao getInstance() {
+    public static RoleDao getInstance() {
         return INSTANCE;
     }
 
     @Override
     public boolean delete(Long id) {
-        try (var connection = ConnectionManager.get(); var preparedStatement = connection.prepareStatement(DELETE_SQL)) {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -62,25 +65,27 @@ public class NicConcDao implements Dao<Long, NicConc> {
     }
 
     @Override
-    public NicConc save(NicConc nicConc) {
-        try (Connection connection = ConnectionManager.get(); PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, nicConc.getNicConcentration());
+    public Role save(Role role) {
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, role.getRole());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                nicConc.setId(generatedKeys.getLong("id"));
+                role.setId(generatedKeys.getLong("id"));
             }
-            return nicConc;
+            return role;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
     @Override
-    public void update(NicConc nicConc) {
-        try (var connetcion = ConnectionManager.get(); var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, nicConc.getNicConcentration());
-            preparedStatement.setLong(2, nicConc.getId());
+    public void update(Role role) {
+        try (var connetcion = ConnectionManager.get();
+             var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
+            preparedStatement.setString(1, role.getRole());
+            preparedStatement.setLong(2, role.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -88,24 +93,26 @@ public class NicConcDao implements Dao<Long, NicConc> {
     }
 
     @Override
-    public Optional<NicConc> findById(Long id) {
-        try (var connection = ConnectionManager.get(); var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+    public Optional<Role> findById(Long id) {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             var resultSet = preparedStatement.executeQuery();
-            NicConc nicConc = null;
+            Role role = null;
             if (resultSet.next()) {
-                nicConc = buildNicConcentration(resultSet);
+                role = buildRole(resultSet);
             }
-            return Optional.ofNullable(nicConc);
+            return Optional.ofNullable(role);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
-    private NicConc buildNicConcentration(ResultSet resultSet) {
+    private Role buildRole(ResultSet resultSet) {
         try {
-            return NicConc.builder().id(resultSet.getLong("id"))
-                    .nicConcentration(resultSet.getString("nic_conc"))
+            return Role.builder()
+                    .id(resultSet.getLong("id"))
+                    .role(resultSet.getString("role"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -113,14 +120,15 @@ public class NicConcDao implements Dao<Long, NicConc> {
     }
 
     @Override
-    public List<NicConc> findAll() {
-        try (var connection = ConnectionManager.get(); var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+    public List<Role> findAll() {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = preparedStatement.executeQuery();
-            List<NicConc> bases = new ArrayList<>();
+            List<Role> roles = new ArrayList<>();
             while (resultSet.next()) {
-                bases.add(buildNicConcentration(resultSet));
+                roles.add(buildRole(resultSet));
             }
-            return bases;
+            return roles;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
