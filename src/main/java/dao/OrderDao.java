@@ -1,6 +1,7 @@
 package dao;
 
 import entity.Order;
+import entity.Role;
 import entity.User;
 import exception.DaoException;
 import lombok.NoArgsConstructor;
@@ -50,14 +51,15 @@ public class OrderDao implements Dao<Long, Order> {
                    u.email        ,
                    u.mobile_phone ,
                    u."password"   ,
-                   u.role_id,
+                   r.role,
                    o.id,
                    o.user_id,
                    o.date_of_payment,
                    o.is_paid,
                    o.date_of_order
             FROM "user" u
-                    left join vapeshop_repository.public."order" o on u.id = o.user_id
+                     join vapeshop_repository.public."order" o on u.id = o.user_id
+                     join roles r on r.id = u.role_id
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
@@ -140,6 +142,10 @@ public class OrderDao implements Dao<Long, Order> {
 
     private Order buildOrder(ResultSet resultSet) {
         try {
+            var role = Role.builder()
+                    .id(resultSet.getLong("role_id"))
+                    .role(resultSet.getString("role"))
+                    .build();
             var user = User.builder()
                     .id(resultSet.getLong("id"))
                     .firstName(resultSet.getString("first_name"))
@@ -149,7 +155,7 @@ public class OrderDao implements Dao<Long, Order> {
                     .email(resultSet.getString("email"))
                     .mobilePhone(resultSet.getString("mobile_phone"))
                     .password(resultSet.getString("password"))
-                    .role(resultSet.getString("role_id"))
+                    .role(role)
                     .build();
             return Order.builder()
                     .id(resultSet.getLong("id"))

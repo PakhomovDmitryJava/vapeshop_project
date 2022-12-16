@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false" %>
 
 <html>
 <head>
@@ -43,14 +44,17 @@
             </c:forEach>
         </select>
     </label><br>
-    <c:if test="${not empty requestScope.errors}">
-        <div style="color: red">
-            <c:forEach var="error" items="${requestScope.errors}">
-                <span>${error.message}</span>
-                <br>
-            </c:forEach>
-        </div>
-    </c:if>
+
+    <button type="submit">Send</button>
+
+<%--    <c:if test="${not empty requestScope.errors}">--%>
+<%--        <div style="color: red">--%>
+<%--            <c:forEach var="error" items="${requestScope.errors}">--%>
+<%--                <span>${error.message}</span>--%>
+<%--                <br>--%>
+<%--            </c:forEach>--%>
+<%--        </div>--%>
+<%--    </c:if>--%>
 
 </form>
 </body>

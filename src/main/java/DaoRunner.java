@@ -7,6 +7,7 @@ import dao.NicConcDao;
 import dao.NicTypeDao;
 import dao.OrderDao;
 import dao.OriginCountryDao;
+import dao.RoleDao;
 import dao.UserDao;
 import entity.Liquid;
 import entity.LiquidBase;
@@ -16,6 +17,7 @@ import entity.Manufacturer;
 import entity.NicConc;
 import entity.NicType;
 import entity.Order;
+import entity.Role;
 import entity.User;
 
 import java.math.BigDecimal;
@@ -89,6 +91,14 @@ public class DaoRunner {
 //        findByIdNicTypeTest(4L);
 //        updateNicTypeTest(4L, "SOME SUPER NEW TYPE");
 //        findByIdNicTypeTest(4L);
+
+//        saveRoleTest("SUPER ADMIN");
+//        deleteRoleTest(3L);
+//        findAllRolesTest();
+        saveRoleTest("SUPER ADMIN");
+        findByIdRoleTest(4L);
+        updateRoleTest(4L, "SOME ROLE");
+        findByIdRoleTest(4L);
     }
 
 
@@ -139,6 +149,12 @@ public class DaoRunner {
     private static void findByIdLiquidTest(Long id) {
         var instance = LiquidDao.getInstance();
         var liquid = instance.findById(id);
+        System.out.println(liquid);
+    }
+
+    private static void findByIdRoleTest(Long roleId) {
+        var roleDao = RoleDao.getInstance();
+        var liquid = roleDao.findById(roleId);
         System.out.println(liquid);
     }
 
@@ -248,6 +264,17 @@ public class DaoRunner {
         System.out.println(liquidDao.findById(id));
     }
 
+    private static void updateRoleTest(Long roleId, String roleNewName) {
+        var roleDao = RoleDao.getInstance();
+        var mayBeRole = roleDao.findById(roleId);
+        System.out.println(mayBeRole);
+        mayBeRole.ifPresent(role -> {
+            role.setRole(roleNewName);
+            roleDao.update(role);
+        });
+        System.out.println(roleDao.findById(roleId));
+    }
+
     private static void saveUserTest() {
         var savedUser = UserDao.getInstance().save(User.builder().firstName("Petr").lastName("Petr").dateOfBirth(LocalDate.from(LocalDateTime.of(1991, 2, 2, 0, 0))).address("Petr").email("Petr@af.com").mobilePhone(String.valueOf(895165455547L)).password("123123").role("2").build());
         System.out.println(savedUser);
@@ -303,6 +330,13 @@ public class DaoRunner {
         System.out.println(savedLiquid);
     }
 
+    private static void saveRoleTest(String newRole) {
+        var savedRole = RoleDao.getInstance().save(Role.builder()
+                .role(newRole)
+                .build());
+        System.out.println(savedRole);
+    }
+
     private static void deleteUserTest(Long id) {
         var userDao = UserDao.getInstance();
         var deletedUser = userDao.delete(id);
@@ -327,6 +361,11 @@ public class DaoRunner {
     private static void deleteNicConcentrationTest(Long id) {
         var deletedNicConcentration = NicConcDao.getInstance().delete(id);
         System.out.println(deletedNicConcentration);
+    }
+
+    private static void deleteRoleTest(Long roleId) {
+        var deletedRole = RoleDao.getInstance().delete(roleId);
+        System.out.println(deletedRole);
     }
 
     private static void findAllUsersTest() {
@@ -390,6 +429,13 @@ public class DaoRunner {
         var liquids = LiquidDao.getInstance().findAll();
         for (Liquid liquid : liquids) {
             System.out.println(liquid);
+        }
+    }
+
+    private static void findAllRolesTest() {
+        var roles = RoleDao.getInstance().findAll();
+        for (Role role : roles) {
+            System.out.println(role);
         }
     }
 

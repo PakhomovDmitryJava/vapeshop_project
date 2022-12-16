@@ -20,5 +20,5 @@ public class User {
     private String email; //5
     private String mobilePhone; //6
     private String password; //7
-    private String role; //8;
+    private Role role; //8;
 }

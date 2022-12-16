@@ -1,7 +1,7 @@
 package dto;
 
+import entity.Role;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Value;
 
 import java.time.LocalDateTime;
@@ -17,5 +17,5 @@ public class UserDto {
     String email; //5
     String mobilePhone; //6
     String password; //7
-    String role; //8
+    Role role; //8
 }

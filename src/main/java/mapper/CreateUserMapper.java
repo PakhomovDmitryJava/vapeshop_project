@@ -11,6 +11,7 @@ public class CreateUserMapper implements Mapper<CreateUserDto, User> {
 
     public static final CreateUserMapper INSTANCE = new CreateUserMapper();
 
+
     @Override
     public User mapFrom(CreateUserDto object) {
         return User.builder()
@@ -21,7 +22,7 @@ public class CreateUserMapper implements Mapper<CreateUserDto, User> {
                 .email(object.getEmail())
                 .mobilePhone(object.getMobilePhone())
                 .password(object.getPassword())
-                .role(object.getRole())
+                .role()
                 .build();
     }
 

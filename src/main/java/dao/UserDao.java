@@ -1,5 +1,6 @@
 package dao;
 
+import entity.Role;
 import entity.User;
 import exception.DaoException;
 import lombok.NoArgsConstructor;
@@ -20,8 +21,6 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public class UserDao implements Dao<Long, User> {
     private static final UserDao INSTANCE = new UserDao();
-
-    private final OrderDao orderDao = OrderDao.getInstance();
 
     private static final String DELETE_SQL = """
             DELETE FROM "user"
@@ -48,22 +47,23 @@ public class UserDao implements Dao<Long, User> {
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT u.id,
-                   u.first_name ,
-                   u.last_name    ,
-                   u.date_of_birth,
-                   u.address      ,
-                   u.email        ,
-                   u.mobile_phone ,
-                   u."password"   ,
-                   u.role_id,
-                   o.id,
-                   o.user_id,
-                   o.date_of_payment,
-                   o.is_paid,
-                   o.date_of_order
-            FROM "user" u
-                    left join "order" o on u.id = o.user_id
+           SELECT u.id,
+                  u.first_name ,
+                  u.last_name    ,
+                  u.date_of_birth,
+                  u.address      ,
+                  u.email        ,
+                  u.mobile_phone ,
+                  u."password"   ,
+                  r.role,
+                  o.id,
+                  o.user_id,
+                  o.date_of_payment,
+                  o.is_paid,
+                  o.date_of_order
+           FROM "user" u
+                     join "order" o on u.id = o.user_id
+                        join roles r on r.id = u.role_id
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
@@ -131,7 +131,7 @@ public class UserDao implements Dao<Long, User> {
         preparedStatement.setString(5, user.getEmail());
         preparedStatement.setString(6, user.getMobilePhone());
         preparedStatement.setString(7, user.getPassword());
-        preparedStatement.setInt(8, Integer.parseInt(user.getRole()));
+        preparedStatement.setObject(8, user.getRole());
     }
 
     @Override
@@ -152,6 +152,10 @@ public class UserDao implements Dao<Long, User> {
 
     private User buildUser(ResultSet resultSet) {
         try {
+            var userRole = Role.builder()
+                    .id(resultSet.getLong("id"))
+                    .role(resultSet.getString("role"))
+                    .build();
             return User.builder()
                     .id(resultSet.getLong("id"))
                     .firstName(resultSet.getString("first_name"))
@@ -161,12 +165,13 @@ public class UserDao implements Dao<Long, User> {
                     .email(resultSet.getString("email"))
                     .mobilePhone(resultSet.getString("mobile_phone"))
                     .password(resultSet.getString("password"))
-                    .role(resultSet.getString("role_id"))
+                    .role(userRole)
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
+
     public static UserDao getInstance() {
         return INSTANCE;
     }

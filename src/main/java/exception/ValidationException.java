@@ -12,4 +12,9 @@ public class ValidationException extends RuntimeException {
     public ValidationException(List<Error> errors) {
         this.errors = errors;
     }
+
+    public boolean isValid() {
+        return errors.isEmpty();
+    }
+
 }

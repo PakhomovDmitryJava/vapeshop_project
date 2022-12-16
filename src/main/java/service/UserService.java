@@ -20,10 +20,10 @@ public class UserService {
     private final CreateUserMapper createUserMapper = CreateUserMapper.getInstance();
 
     public Long create(CreateUserDto userDto) {
-        var validationResult = createUserValidator.isValid(userDto);
-        if (!validationResult.isValid()) {
-            throw new ValidationException(validationResult.getErrors());
-        }
+//        var validationResult = createUserValidator.isValid(userDto);
+//        if (!validationResult.isValid()) {
+//            throw new ValidationException(validationResult.getErrors());
+//        }
         var user = createUserMapper.mapFrom(userDto);
         userDao.save(user);
         return user.getId();
