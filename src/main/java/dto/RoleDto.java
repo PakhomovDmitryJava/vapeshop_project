@@ -1,10 +1,10 @@
 package dto;
 
-import lombok.Data;
+import lombok.Builder;
 import lombok.Value;
 
 @Value
-@Data
+@Builder
 public class RoleDto {
     String id;
     String role;

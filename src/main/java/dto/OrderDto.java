@@ -1,13 +1,14 @@
 package dto;
 
 import entity.User;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Value;
 
 import java.time.LocalDateTime;
 
 @Value
-@Data
+@Builder
 public class OrderDto {
     Long id;
     User user;

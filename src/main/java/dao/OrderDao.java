@@ -1,4 +1,4 @@
-package DAO;
+package dao;
 
 import entity.Order;
 import entity.User;
@@ -50,6 +50,7 @@ public class OrderDao implements Dao<Long, Order> {
                    u.email        ,
                    u.mobile_phone ,
                    u."password"   ,
+                   u.role_id,
                    o.id,
                    o.user_id,
                    o.date_of_payment,
@@ -148,10 +149,11 @@ public class OrderDao implements Dao<Long, Order> {
                     .email(resultSet.getString("email"))
                     .mobilePhone(resultSet.getString("mobile_phone"))
                     .password(resultSet.getString("password"))
+                    .role(resultSet.getString("role_id"))
                     .build();
             return Order.builder()
                     .id(resultSet.getLong("id"))
-                    .user(userDao.findById(resultSet.getLong("user_id")).orElse(null))
+                    .user(user)
                     .orderDate(resultSet.getTimestamp("date_of_order").toLocalDateTime())
                     .isPaid(resultSet.getBoolean("is_paid"))
                     .paymentDate(resultSet.getTimestamp("date_of_payment").toLocalDateTime())

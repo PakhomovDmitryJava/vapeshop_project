@@ -1,6 +1,6 @@
-package DAO;
+package dao;
 
-import entity.LiquidLine;
+import entity.LiquidTaste;
 import exception.DaoException;
 import lombok.NoArgsConstructor;
 import util.ConnectionManager;
@@ -17,37 +17,37 @@ import java.util.Optional;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class LiquidLineDao implements Dao<Long, LiquidLine> {
-
-    private static final LiquidLineDao INSTANCE = new LiquidLineDao();
+public class LiquidTasteDao implements Dao<Long, LiquidTaste> {
+    private static final LiquidTasteDao INSTANCE = new LiquidTasteDao();
 
     private static final String DELETE_SQL = """
-            DELETE FROM "liquid_line"
+            DELETE FROM liquid_taste
             WHERE id = ?
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO "liquid_line" (line)
+            INSERT INTO liquid_taste (taste)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE "liquid_line"
+            UPDATE liquid_taste
             SET
-            line = ?
+            taste = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT ll.id, ll.line
-            from liquid_line ll
-               """;
+            SELECT lt.id,
+                   lt.taste
+            FROM liquid_taste lt
+                        """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE ll.id = ?
+            WHERE lt.id = ?
             """;
 
-    public static LiquidLineDao getInstance() {
+    public static LiquidTasteDao getInstance() {
         return INSTANCE;
     }
 
@@ -63,27 +63,27 @@ public class LiquidLineDao implements Dao<Long, LiquidLine> {
     }
 
     @Override
-    public LiquidLine save(LiquidLine liquidLine) {
+    public LiquidTaste save(LiquidTaste liquidTaste) {
         try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, liquidLine.getLiquidLine());
+            preparedStatement.setString(1, liquidTaste.getLiquidTaste());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                liquidLine.setId(generatedKeys.getLong("id"));
+                liquidTaste.setId(generatedKeys.getLong("id"));
             }
-            return liquidLine;
+            return liquidTaste;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
     @Override
-    public void update(LiquidLine liquidLine) {
+    public void update(LiquidTaste liquidTaste) {
         try (var connetcion = ConnectionManager.get();
              var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, liquidLine.getLiquidLine());
-            preparedStatement.setLong(2, liquidLine.getId());
+            preparedStatement.setString(1, liquidTaste.getLiquidTaste());
+            preparedStatement.setLong(2, liquidTaste.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -91,46 +91,44 @@ public class LiquidLineDao implements Dao<Long, LiquidLine> {
     }
 
     @Override
-    public Optional<LiquidLine> findById(Long id) {
+    public Optional<LiquidTaste> findById(Long id) {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             var resultSet = preparedStatement.executeQuery();
-            LiquidLine liquidLine = null;
+            LiquidTaste liquidTaste = null;
             if (resultSet.next()) {
-                liquidLine = buildLiquidLine(resultSet);
+                liquidTaste = buildBase(resultSet);
             }
-            return Optional.ofNullable(liquidLine);
+            return Optional.ofNullable(liquidTaste);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
-    private LiquidLine buildLiquidLine(ResultSet resultSet) {
+    private LiquidTaste buildBase(ResultSet resultSet) {
         try {
-            return LiquidLine.builder()
+            return LiquidTaste.builder()
                     .id(resultSet.getLong("id"))
-                    .liquidLine(resultSet.getString("line"))
+                    .liquidTaste(resultSet.getString("taste"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
-
     @Override
-    public List<LiquidLine> findAll() {
+    public List<LiquidTaste> findAll() {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = preparedStatement.executeQuery();
-            List<LiquidLine> liquidLines = new ArrayList<>();
+            List<LiquidTaste> liquidTastes = new ArrayList<>();
             while (resultSet.next()) {
-                liquidLines.add(buildLiquidLine(resultSet));
+                liquidTastes.add(buildBase(resultSet));
             }
-            return liquidLines;
+            return liquidTastes;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
-
 }

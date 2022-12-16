@@ -1,14 +1,12 @@
 package service;
 
-import DAO.UserDao;
+import dao.UserDao;
 import dto.CreateUserDto;
-import entity.User;
 import exception.ValidationException;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
 import mapper.CreateUserMapper;
 import validator.CreateUserValidator;
-import validator.ValidationResult;
 
 import static lombok.AccessLevel.PRIVATE;
 

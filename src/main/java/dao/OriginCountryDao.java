@@ -1,6 +1,6 @@
-package DAO;
+package dao;
 
-import entity.LiquidBase;
+import entity.OriginCountry;
 import exception.DaoException;
 import lombok.NoArgsConstructor;
 import util.ConnectionManager;
@@ -17,39 +17,38 @@ import java.util.Optional;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class LiquidBaseDao implements Dao<Long, LiquidBase> {
-
-    private static final LiquidBaseDao INSTANCE = new LiquidBaseDao();
+public class OriginCountryDao implements Dao<Long, OriginCountry> {
+    private static final OriginCountryDao INSTANCE = new OriginCountryDao();
 
     private static final String DELETE_SQL = """
-            DELETE FROM liquid_base
+            DELETE FROM origin_country
             WHERE id = ?
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO liquid_base (base)
+            INSERT INTO origin_country (country)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE liquid_base
+            UPDATE origin_country
             SET
-            base = ?
+            country = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT b.id,
-                   b.base
-            FROM liquid_base b
+            SELECT c.id,
+                   c.country
+            FROM origin_country c
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE b.id = ?
+            WHERE c.id = ?
             """;
 
 
-    public static LiquidBaseDao getInstance() {
+    public static OriginCountryDao getInstance() {
         return INSTANCE;
     }
 
@@ -65,27 +64,27 @@ public class LiquidBaseDao implements Dao<Long, LiquidBase> {
     }
 
     @Override
-    public entity.LiquidBase save(entity.LiquidBase liquidBase) {
+    public OriginCountry save(OriginCountry originCountry) {
         try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, liquidBase.getBase());
+            preparedStatement.setString(1, originCountry.getCountry());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                liquidBase.setId(generatedKeys.getLong("id"));
+                originCountry.setId(generatedKeys.getLong("id"));
             }
-            return liquidBase;
+            return originCountry;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
     @Override
-    public void update(entity.LiquidBase liquidBase) {
+    public void update(OriginCountry originCountry) {
         try (var connetcion = ConnectionManager.get();
              var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, liquidBase.getBase());
-            preparedStatement.setLong(2, liquidBase.getId());
+            preparedStatement.setString(1, originCountry.getCountry());
+            preparedStatement.setLong(2, originCountry.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -93,27 +92,27 @@ public class LiquidBaseDao implements Dao<Long, LiquidBase> {
     }
 
     @Override
-    public Optional<entity.LiquidBase> findById(Long id) {
+    public Optional<OriginCountry> findById(Long id) {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             var resultSet = preparedStatement.executeQuery();
-            entity.LiquidBase liquidBase = null;
+            OriginCountry originCountry = null;
             if (resultSet.next()) {
-                liquidBase = buildBase(resultSet);
+                originCountry = buildOriginCountry(resultSet);
             }
-            return Optional.ofNullable(liquidBase);
+            return Optional.ofNullable(originCountry);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
-    private entity.LiquidBase buildBase(ResultSet resultSet) {
+
+    private OriginCountry buildOriginCountry(ResultSet resultSet) {
         try {
-            return entity.LiquidBase
-                    .builder()
+            return OriginCountry.builder()
                     .id(resultSet.getLong("id"))
-                    .base(resultSet.getString("base"))
+                    .country(resultSet.getString("country"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -121,13 +120,13 @@ public class LiquidBaseDao implements Dao<Long, LiquidBase> {
     }
 
     @Override
-    public List<entity.LiquidBase> findAll() {
+    public List<OriginCountry> findAll() {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = preparedStatement.executeQuery();
-            List<entity.LiquidBase> bases = new ArrayList<>();
+            List<OriginCountry> bases = new ArrayList<>();
             while (resultSet.next()) {
-                bases.add(buildBase(resultSet));
+                bases.add(buildOriginCountry(resultSet));
             }
             return bases;
         } catch (SQLException e) {

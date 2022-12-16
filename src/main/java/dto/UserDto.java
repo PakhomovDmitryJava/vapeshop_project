@@ -1,12 +1,13 @@
 package dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.Value;
 
 import java.time.LocalDateTime;
 
 @Value
-@Data
+@Builder
 public class UserDto {
     Long id;
     String firstName; //1

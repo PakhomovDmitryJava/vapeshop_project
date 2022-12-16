@@ -1,6 +1,6 @@
-package DAO;
+package dao;
 
-import entity.NicConc;
+import entity.LiquidBase;
 import exception.DaoException;
 import lombok.NoArgsConstructor;
 import util.ConnectionManager;
@@ -17,43 +17,46 @@ import java.util.Optional;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class NicConcDao implements Dao<Long, NicConc> {
-    private static final NicConcDao INSTANCE = new NicConcDao();
+public class LiquidBaseDao implements Dao<Long, LiquidBase> {
+
+    private static final LiquidBaseDao INSTANCE = new LiquidBaseDao();
 
     private static final String DELETE_SQL = """
-            DELETE FROM nicotine_concentration
+            DELETE FROM liquid_base
             WHERE id = ?
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO nicotine_concentration (nic_conc)
+            INSERT INTO liquid_base (base)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE nicotine_concentration
+            UPDATE liquid_base
             SET
-            nic_conc = ?
+            base = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT nc.id,
-                   nc.nic_conc
-            FROM nicotine_concentration nc
+            SELECT b.id,
+                   b.base
+            FROM liquid_base b
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE nc.id = ?
+            WHERE b.id = ?
             """;
 
-    public static NicConcDao getInstance() {
+
+    public static LiquidBaseDao getInstance() {
         return INSTANCE;
     }
 
     @Override
     public boolean delete(Long id) {
-        try (var connection = ConnectionManager.get(); var preparedStatement = connection.prepareStatement(DELETE_SQL)) {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -62,25 +65,27 @@ public class NicConcDao implements Dao<Long, NicConc> {
     }
 
     @Override
-    public NicConc save(NicConc nicConc) {
-        try (Connection connection = ConnectionManager.get(); PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, nicConc.getNicConcentration());
+    public entity.LiquidBase save(entity.LiquidBase liquidBase) {
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, liquidBase.getBase());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                nicConc.setId(generatedKeys.getLong("id"));
+                liquidBase.setId(generatedKeys.getLong("id"));
             }
-            return nicConc;
+            return liquidBase;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
     @Override
-    public void update(NicConc nicConc) {
-        try (var connetcion = ConnectionManager.get(); var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, nicConc.getNicConcentration());
-            preparedStatement.setLong(2, nicConc.getId());
+    public void update(entity.LiquidBase liquidBase) {
+        try (var connetcion = ConnectionManager.get();
+             var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
+            preparedStatement.setString(1, liquidBase.getBase());
+            preparedStatement.setLong(2, liquidBase.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -88,24 +93,27 @@ public class NicConcDao implements Dao<Long, NicConc> {
     }
 
     @Override
-    public Optional<NicConc> findById(Long id) {
-        try (var connection = ConnectionManager.get(); var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+    public Optional<entity.LiquidBase> findById(Long id) {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             var resultSet = preparedStatement.executeQuery();
-            NicConc nicConc = null;
+            entity.LiquidBase liquidBase = null;
             if (resultSet.next()) {
-                nicConc = buildNicConcentration(resultSet);
+                liquidBase = buildBase(resultSet);
             }
-            return Optional.ofNullable(nicConc);
+            return Optional.ofNullable(liquidBase);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
-    private NicConc buildNicConcentration(ResultSet resultSet) {
+    private entity.LiquidBase buildBase(ResultSet resultSet) {
         try {
-            return NicConc.builder().id(resultSet.getLong("id"))
-                    .nicConcentration(resultSet.getString("nic_conc"))
+            return entity.LiquidBase
+                    .builder()
+                    .id(resultSet.getLong("id"))
+                    .base(resultSet.getString("base"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -113,12 +121,13 @@ public class NicConcDao implements Dao<Long, NicConc> {
     }
 
     @Override
-    public List<NicConc> findAll() {
-        try (var connection = ConnectionManager.get(); var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+    public List<entity.LiquidBase> findAll() {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = preparedStatement.executeQuery();
-            List<NicConc> bases = new ArrayList<>();
+            List<entity.LiquidBase> bases = new ArrayList<>();
             while (resultSet.next()) {
-                bases.add(buildNicConcentration(resultSet));
+                bases.add(buildBase(resultSet));
             }
             return bases;
         } catch (SQLException e) {

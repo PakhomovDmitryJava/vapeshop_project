@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="vapeshop_project:war">
+    <output-path>$PROJECT_DIR$/out/artifacts/vapeshop_project_war</output-path>
+    <root id="archive" name="vapeshop_project_war.war">
+      <element id="artifact" artifact-name="vapeshop_project:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,6 +1,6 @@
-package DAO;
+package dao;
 
-import entity.NicType;
+import entity.LiquidLine;
 import exception.DaoException;
 import lombok.NoArgsConstructor;
 import util.ConnectionManager;
@@ -17,37 +17,37 @@ import java.util.Optional;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class NicTypeDao implements Dao<Long, NicType> {
-    private static final NicTypeDao INSTANCE = new NicTypeDao();
+public class LiquidLineDao implements Dao<Long, LiquidLine> {
+
+    private static final LiquidLineDao INSTANCE = new LiquidLineDao();
 
     private static final String DELETE_SQL = """
-            DELETE FROM nicotine_type
+            DELETE FROM "liquid_line"
             WHERE id = ?
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO nicotine_type (nic_type)
+            INSERT INTO "liquid_line" (line)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE nicotine_type
+            UPDATE "liquid_line"
             SET
-            nic_type = ?
+            line = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT nt.id,
-                   nt.nic_type
-            FROM nicotine_type nt
-                        """;
+            SELECT ll.id, ll.line
+            from liquid_line ll
+               """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE nt.id = ?
+            WHERE ll.id = ?
             """;
 
-    public static NicTypeDao getInstance() {
+    public static LiquidLineDao getInstance() {
         return INSTANCE;
     }
 
@@ -63,27 +63,27 @@ public class NicTypeDao implements Dao<Long, NicType> {
     }
 
     @Override
-    public NicType save(NicType nicType) {
+    public LiquidLine save(LiquidLine liquidLine) {
         try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, nicType.getNicType());
+            preparedStatement.setString(1, liquidLine.getLiquidLine());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                nicType.setId(generatedKeys.getLong("id"));
+                liquidLine.setId(generatedKeys.getLong("id"));
             }
-            return nicType;
+            return liquidLine;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
     @Override
-    public void update(NicType nicType) {
+    public void update(LiquidLine liquidLine) {
         try (var connetcion = ConnectionManager.get();
              var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, nicType.getNicType());
-            preparedStatement.setLong(2, nicType.getId());
+            preparedStatement.setString(1, liquidLine.getLiquidLine());
+            preparedStatement.setLong(2, liquidLine.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -91,44 +91,46 @@ public class NicTypeDao implements Dao<Long, NicType> {
     }
 
     @Override
-    public Optional<NicType> findById(Long id) {
+    public Optional<LiquidLine> findById(Long id) {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             var resultSet = preparedStatement.executeQuery();
-            NicType nicType = null;
+            LiquidLine liquidLine = null;
             if (resultSet.next()) {
-                nicType = buildNicType(resultSet);
+                liquidLine = buildLiquidLine(resultSet);
             }
-            return Optional.ofNullable(nicType);
+            return Optional.ofNullable(liquidLine);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
-    private NicType buildNicType(ResultSet resultSet) {
+    private LiquidLine buildLiquidLine(ResultSet resultSet) {
         try {
-            return NicType.builder()
+            return LiquidLine.builder()
                     .id(resultSet.getLong("id"))
-                    .nicType(resultSet.getString("nic_type"))
+                    .liquidLine(resultSet.getString("line"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
+
     @Override
-    public List<NicType> findAll() {
+    public List<LiquidLine> findAll() {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = preparedStatement.executeQuery();
-            List<NicType> nicTypes = new ArrayList<>();
+            List<LiquidLine> liquidLines = new ArrayList<>();
             while (resultSet.next()) {
-                nicTypes.add(buildNicType(resultSet));
+                liquidLines.add(buildLiquidLine(resultSet));
             }
-            return nicTypes;
+            return liquidLines;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
+
 }

@@ -1,13 +1,13 @@
-import DAO.LiquidBaseDao;
-import DAO.LiquidDao;
-import DAO.LiquidLineDao;
-import DAO.LiquidTasteDao;
-import DAO.ManufacturerDao;
-import DAO.NicConcDao;
-import DAO.NicTypeDao;
-import DAO.OrderDao;
-import DAO.OriginCountryDao;
-import DAO.UserDao;
+import dao.LiquidBaseDao;
+import dao.LiquidDao;
+import dao.LiquidLineDao;
+import dao.LiquidTasteDao;
+import dao.ManufacturerDao;
+import dao.NicConcDao;
+import dao.NicTypeDao;
+import dao.OrderDao;
+import dao.OriginCountryDao;
+import dao.UserDao;
 import entity.Liquid;
 import entity.LiquidBase;
 import entity.LiquidLine;
@@ -24,71 +24,71 @@ import java.time.LocalDateTime;
 
 public class DaoRunner {
     public static void main(String[] args) {
-        saveUserTest();
-        deleteUserTest(4L);
-        findAllUsersTest();
-        findByIdUserTest(3L);
-        updateUserTest(3L);
-        findByIdUserTest(3L);
+//        saveUserTest();
+//        deleteUserTest(4L);
+//        findAllUsersTest();
+//        findByIdUserTest(3L);
+//        updateUserTest(3L);
+//        findByIdUserTest(3L);
 
-        saveOrderTest();
-        deleteOrderTest(4L);
-        findAllOrdersTest();
-        finByIdOrderTest(3L);
-        updateOrderTest(3L);
-        finByIdOrderTest(3L);
-
-
-        saveLiquidTest();
-        deleteLiquidTest(2L);
-        findAllLiquidsTest();
-        findByIdLiquidTest(2L);
-        updateLiquidTest(2L);
-        findByIdLiquidTest(2L);
+//        saveOrderTest();
+//        deleteOrderTest(4L);
+//        findAllOrdersTest();
+//        finByIdOrderTest(3L);
+//        updateOrderTest(3L);
+//        finByIdOrderTest(3L);
 
 
-        saveLiquidLineTest("Some New Line");
-        deleteLiquidLineTest(14L);
-        findAllLiquidLinesTest();
-        findByIdLiquidLineTest(1L);
-        updateLiquidLineTest(1L, "Something New");
-        findByIdLiquidLineTest(12L);
-
-
-        saveBaseTest("85/15");
-        deleteBaseTest(7L);
-        findAllBaseTest();
-        findByIdBaseTest(1L);
-        updateBaseTest();
-        findByIdBaseTest(1L);
-
-        saveLiquidTasteTest("Forest Zen");
-        deleteLiquidTasteTest(11L);
-        findAllLiquidTastesTest();
-        findByIdLiquidTasteTest(1L);
-        updateLiquidTasteTest(1L, "Shoria");
-        findByIdLiquidTasteTest(1L);
-
-        saveManufacturerTest("DUAL");
-        deleteManufacturerTest(15L);
-        findAllManufacturerTest();
-        findByIdManufacturerTest(14L);
-        updateManufacturerTest(14L, "Leeearmonth");
-        findByIdManufacturerTest(14L);
-
-        saveNicConcentrationTest("20 SUPER STRONG");
-        deleteNicConcentrationTest(9L);
-        findAllNicConcentrationTest();
-        findByIdNicConcentrationTest(8L);
-        updateNicConcentrationTest(8L, "20 SUPER HARD");
-        findByIdNicConcentrationTest(8L);
-
-        saveNicTypeTest("SOME NEW TYPE1");
-        deleteNicTypeTest(8L);
-        findAllNicTypeTest();
-        findByIdNicTypeTest(8L);
-        updateNicTypeTest(8L, "SOME SUPER NEW TYPE");
-        findByIdNicTypeTest(8L);
+//        saveLiquidTest();
+//        deleteLiquidTest(2L);
+//        findAllLiquidsTest();
+//        findByIdLiquidTest(1L);
+//        updateLiquidTest(1L);
+//        findByIdLiquidTest(1L);
+//
+//
+//        saveLiquidLineTest("Some New Line");
+//        deleteLiquidLineTest(13L);
+//        findAllLiquidLinesTest();
+//        findByIdLiquidLineTest(1L);
+//        updateLiquidLineTest(1L, "Something New");
+//        findByIdLiquidLineTest(1L);
+//
+//
+//        saveBaseTest("85/15");
+//        deleteBaseTest(7L);
+//        findAllBaseTest();
+//        findByIdBaseTest(1L);
+//        updateBaseTest();
+//        findByIdBaseTest(1L);
+//
+//        saveLiquidTasteTest("Forest Zen");
+//        deleteLiquidTasteTest(10L);
+//        findAllLiquidTastesTest();
+//        findByIdLiquidTasteTest(1L);
+//        updateLiquidTasteTest(1L, "Shoria");
+//        findByIdLiquidTasteTest(1L);
+//
+//        saveManufacturerTest("DUAL");
+//        deleteManufacturerTest(15L);
+//        findAllManufacturerTest();
+//        findByIdManufacturerTest(14L);
+//        updateManufacturerTest(14L, "Leeearmonth");
+//        findByIdManufacturerTest(14L);
+//
+//        saveNicConcentrationTest("20 SUPER STRONG");
+//        deleteNicConcentrationTest(9L);
+//        findAllNicConcentrationTest();
+//        findByIdNicConcentrationTest(8L);
+//        updateNicConcentrationTest(8L, "20 SUPER HARD");
+//        findByIdNicConcentrationTest(8L);
+//
+//        saveNicTypeTest("SOME NEW TYPE1");
+//        deleteNicTypeTest(5L);
+//        findAllNicTypeTest();
+//        findByIdNicTypeTest(4L);
+//        updateNicTypeTest(4L, "SOME SUPER NEW TYPE");
+//        findByIdNicTypeTest(4L);
     }
 
 
@@ -97,7 +97,8 @@ public class DaoRunner {
     }
 
     private static void finByIdOrderTest(Long id) {
-        System.out.println(OrderDao.getInstance().findById(id));
+        var mayBeOrder = OrderDao.getInstance().findById(id);
+        System.out.println(mayBeOrder);
     }
 
 

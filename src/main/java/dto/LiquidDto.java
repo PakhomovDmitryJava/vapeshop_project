@@ -7,13 +7,14 @@ import entity.Manufacturer;
 import entity.NicConc;
 import entity.NicType;
 import entity.OriginCountry;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Value;
 
 import java.math.BigDecimal;
 
 @Value
-@Data
+@Builder
 public class LiquidDto {
     Long id;
     Manufacturer manufacturer; //1

@@ -1,6 +1,6 @@
-package DAO;
+package dao;
 
-import entity.OriginCountry;
+import entity.Role;
 import exception.DaoException;
 import lombok.NoArgsConstructor;
 import util.ConnectionManager;
@@ -17,38 +17,38 @@ import java.util.Optional;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class OriginCountryDao implements Dao<Long, OriginCountry> {
-    private static final OriginCountryDao INSTANCE = new OriginCountryDao();
+public class RoleDao implements Dao<Long, Role>{
+
+    private static final RoleDao INSTANCE = new RoleDao();
 
     private static final String DELETE_SQL = """
-            DELETE FROM origin_country
+            DELETE FROM roles
             WHERE id = ?
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO origin_country (country)
+            INSERT INTO roles (role)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
-            UPDATE origin_country
+            UPDATE roles
             SET
-            country = ?
+            role = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT c.id,
-                   c.country
-            FROM origin_country c
+            SELECT r.id,
+                   r.role
+            FROM roles r
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
-            WHERE c.id = ?
+            WHERE r.id = ?
             """;
 
-
-    public static OriginCountryDao getInstance() {
+    public static RoleDao getInstance() {
         return INSTANCE;
     }
 
@@ -64,27 +64,27 @@ public class OriginCountryDao implements Dao<Long, OriginCountry> {
     }
 
     @Override
-    public OriginCountry save(OriginCountry originCountry) {
+    public Role save(Role role) {
         try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, originCountry.getCountry());
+            preparedStatement.setString(1, role.getRole());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                originCountry.setId(generatedKeys.getLong("id"));
+                role.setId(generatedKeys.getLong("id"));
             }
-            return originCountry;
+            return role;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
     @Override
-    public void update(OriginCountry originCountry) {
+    public void update(Role role) {
         try (var connetcion = ConnectionManager.get();
              var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, originCountry.getCountry());
-            preparedStatement.setLong(2, originCountry.getId());
+            preparedStatement.setString(1, role.getRole());
+            preparedStatement.setLong(2, role.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -92,27 +92,26 @@ public class OriginCountryDao implements Dao<Long, OriginCountry> {
     }
 
     @Override
-    public Optional<OriginCountry> findById(Long id) {
+    public Optional<Role> findById(Long id) {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             var resultSet = preparedStatement.executeQuery();
-            OriginCountry originCountry = null;
+            Role role = null;
             if (resultSet.next()) {
-                originCountry = buildOriginCountry(resultSet);
+                role = buildRole(resultSet);
             }
-            return Optional.ofNullable(originCountry);
+            return Optional.ofNullable(role);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
 
-
-    private OriginCountry buildOriginCountry(ResultSet resultSet) {
+    private Role buildRole(ResultSet resultSet) {
         try {
-            return OriginCountry.builder()
+            return Role.builder()
                     .id(resultSet.getLong("id"))
-                    .country(resultSet.getString("country"))
+                    .role(resultSet.getString("role"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -120,15 +119,15 @@ public class OriginCountryDao implements Dao<Long, OriginCountry> {
     }
 
     @Override
-    public List<OriginCountry> findAll() {
+    public List<Role> findAll() {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             var resultSet = preparedStatement.executeQuery();
-            List<OriginCountry> bases = new ArrayList<>();
+            List<Role> roles = new ArrayList<>();
             while (resultSet.next()) {
-                bases.add(buildOriginCountry(resultSet));
+                roles.add(buildRole(resultSet));
             }
-            return bases;
+            return roles;
         } catch (SQLException e) {
             throw new DaoException(e);
         }

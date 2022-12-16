@@ -1,13 +1,15 @@
 package servlet;
 
-import DAO.RoleDao;
+import dao.RoleDao;
 import dto.CreateUserDto;
+import exception.ValidationException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import service.UserService;
+import util.JspHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,10 +18,13 @@ import java.util.List;
 public class RegistrationServlet extends HttpServlet {
 
     private final UserService userService = UserService.getInstance();
-    private final RoleDao roleDao = RoleDao.getInstance();
+//    private final RoleDao roleDao = RoleDao.getInstance();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("roles",roleDao.findAll());
+        req.setAttribute("roles", List.of("ADMIN", "USER"));
+
+        req.getRequestDispatcher(JspHelper.getPath("registration"))
+                .forward(req, resp);
     }
 
     @Override
@@ -35,7 +40,12 @@ public class RegistrationServlet extends HttpServlet {
                 .role(req.getParameter("role"))
                 .build();
 
-        userService.create(createUserDto);
-        resp.sendRedirect("/login");
+        try {
+            userService.create(createUserDto);
+            resp.sendRedirect("/login");
+        } catch (ValidationException exception) {
+            req.setAttribute("errors", exception.getErrors());
+            doGet(req, resp);
+        }
     }
 }
