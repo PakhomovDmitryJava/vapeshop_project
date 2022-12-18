@@ -26,21 +26,23 @@ import java.time.LocalDateTime;
 
 public class DaoRunner {
     public static void main(String[] args) {
+        findByNameRole("USER");
+
 //        saveUserTest();
 //        deleteUserTest(4L);
 //        findAllUsersTest();
 //        findByIdUserTest(3L);
 //        updateUserTest(3L);
 //        findByIdUserTest(3L);
-
+//
 //        saveOrderTest();
 //        deleteOrderTest(4L);
 //        findAllOrdersTest();
 //        finByIdOrderTest(3L);
 //        updateOrderTest(3L);
 //        finByIdOrderTest(3L);
-
-
+//
+//
 //        saveLiquidTest();
 //        deleteLiquidTest(2L);
 //        findAllLiquidsTest();
@@ -91,14 +93,19 @@ public class DaoRunner {
 //        findByIdNicTypeTest(4L);
 //        updateNicTypeTest(4L, "SOME SUPER NEW TYPE");
 //        findByIdNicTypeTest(4L);
-
+//
 //        saveRoleTest("SUPER ADMIN");
 //        deleteRoleTest(3L);
 //        findAllRolesTest();
-        saveRoleTest("SUPER ADMIN");
-        findByIdRoleTest(4L);
-        updateRoleTest(4L, "SOME ROLE");
-        findByIdRoleTest(4L);
+//        saveRoleTest("SUPER ADMIN");
+//        findByIdRoleTest(4L);
+//        updateRoleTest(4L, "SOME ROLE");
+//        findByIdRoleTest(4L);
+    }
+
+    private static void findByNameRole(String roleName) {
+        var mayBeRole = RoleDao.getInstance().findByName(roleName);
+        System.out.println(mayBeRole);
     }
 
 
@@ -269,14 +276,18 @@ public class DaoRunner {
         var mayBeRole = roleDao.findById(roleId);
         System.out.println(mayBeRole);
         mayBeRole.ifPresent(role -> {
-            role.setRole(roleNewName);
+            role.setRoleName(roleNewName);
             roleDao.update(role);
         });
         System.out.println(roleDao.findById(roleId));
     }
 
     private static void saveUserTest() {
-        var savedUser = UserDao.getInstance().save(User.builder().firstName("Petr").lastName("Petr").dateOfBirth(LocalDate.from(LocalDateTime.of(1991, 2, 2, 0, 0))).address("Petr").email("Petr@af.com").mobilePhone(String.valueOf(895165455547L)).password("123123").role("2").build());
+        var role = Role.builder()
+                .id(1L)
+                .roleName("ADMIN")
+                .build();
+        var savedUser = UserDao.getInstance().save(User.builder().firstName("Petr").lastName("Petr").dateOfBirth(LocalDate.from(LocalDateTime.of(1991, 2, 2, 0, 0))).address("Petr").email("Petr@af.com").mobilePhone(String.valueOf(895165455547L)).password("123123").role(role).build());
         System.out.println(savedUser);
     }
 
@@ -332,7 +343,7 @@ public class DaoRunner {
 
     private static void saveRoleTest(String newRole) {
         var savedRole = RoleDao.getInstance().save(Role.builder()
-                .role(newRole)
+                .roleName(newRole)
                 .build());
         System.out.println(savedRole);
     }

@@ -3,8 +3,6 @@ package dto;
 import lombok.Builder;
 import lombok.Value;
 
-import java.time.LocalDateTime;
-
 @Value
 @Builder
 public class CreateUserDto {
@@ -15,5 +13,5 @@ public class CreateUserDto {
     String email;
     String mobilePhone;
     String password;
-    String role;
+    String roleId;
 }

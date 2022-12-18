@@ -55,7 +55,9 @@ public class UserDao implements Dao<Long, User> {
                   u.email        ,
                   u.mobile_phone ,
                   u."password"   ,
-                  r.role,
+                  u.role_id,
+                  r.id,
+                  r.role_name,
                   o.id,
                   o.user_id,
                   o.date_of_payment,
@@ -82,7 +84,8 @@ public class UserDao implements Dao<Long, User> {
 
     @Override
     public User save(User user) {
-        try (Connection connection = ConnectionManager.get(); PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
             setUserFields(user, preparedStatement);
             preparedStatement.executeUpdate();
             var generatedKeys = preparedStatement.getGeneratedKeys();
@@ -131,7 +134,7 @@ public class UserDao implements Dao<Long, User> {
         preparedStatement.setString(5, user.getEmail());
         preparedStatement.setString(6, user.getMobilePhone());
         preparedStatement.setString(7, user.getPassword());
-        preparedStatement.setObject(8, user.getRole());
+        preparedStatement.setLong(8, user.getRole().getId());
     }
 
     @Override
@@ -150,11 +153,12 @@ public class UserDao implements Dao<Long, User> {
         }
     }
 
+
     private User buildUser(ResultSet resultSet) {
         try {
             var userRole = Role.builder()
-                    .id(resultSet.getLong("id"))
-                    .role(resultSet.getString("role"))
+                    .id(resultSet.getLong("role_id"))
+                    .roleName(resultSet.getString("role_name"))
                     .build();
             return User.builder()
                     .id(resultSet.getLong("id"))

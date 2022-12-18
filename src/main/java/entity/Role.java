@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import util.LocalDateFormatter;
 
 @Builder
 @Data
@@ -12,5 +11,5 @@ import util.LocalDateFormatter;
 @NoArgsConstructor
 public class Role {
     Long id;
-    String role;
+    String roleName;
 }

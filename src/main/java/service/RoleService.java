@@ -6,7 +6,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RoleService {
@@ -19,9 +20,9 @@ public class RoleService {
        return roleDao.findAll().stream()
                .map(role -> RoleDto.builder()
                        .id(String.valueOf(role.getId()))
-                       .role(role.getRole())
+                       .roleName(role.getRoleName())
                        .build())
-               .collect(Collectors.toList());
+               .collect(toList());
    }
 
     public static RoleService getInstance() {

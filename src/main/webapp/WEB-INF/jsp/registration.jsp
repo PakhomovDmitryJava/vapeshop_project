@@ -40,7 +40,7 @@
     <label for="role">Role:
         <select name="role" id="role">
             <c:forEach var="role" items="${requestScope.roles}">
-                <option value="${role}">${role}</option>
+                <option value="${role.id}">${role.roleName}</option>
             </c:forEach>
         </select>
     </label><br>

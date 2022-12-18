@@ -52,6 +52,7 @@ public class OrderDao implements Dao<Long, Order> {
                    u.mobile_phone ,
                    u."password"   ,
                    r.role,
+                   u.role_id,
                    o.id,
                    o.user_id,
                    o.date_of_payment,
@@ -59,7 +60,7 @@ public class OrderDao implements Dao<Long, Order> {
                    o.date_of_order
             FROM "user" u
                      join vapeshop_repository.public."order" o on u.id = o.user_id
-                     join roles r on r.id = u.role_id
+                        join roles r on r.id = u.role_id
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
@@ -144,7 +145,7 @@ public class OrderDao implements Dao<Long, Order> {
         try {
             var role = Role.builder()
                     .id(resultSet.getLong("role_id"))
-                    .role(resultSet.getString("role"))
+                    .roleName(resultSet.getString("role_name"))
                     .build();
             var user = User.builder()
                     .id(resultSet.getLong("id"))

@@ -1,8 +1,6 @@
 package servlet;
 
 import dto.CreateUserDto;
-import dto.RoleDto;
-import exception.ValidationException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,8 +11,6 @@ import service.UserService;
 import util.JspHelper;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
@@ -24,7 +20,7 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("roles", roleService.findAll().stream().map(RoleDto::getRole).collect(Collectors.toList()));
+        req.setAttribute("roles", roleService.findAll());
 
         req.getRequestDispatcher(JspHelper.getPath("/registration"))
                 .forward(req, resp);
@@ -40,7 +36,7 @@ public class RegistrationServlet extends HttpServlet {
                 .email(req.getParameter("email"))
                 .mobilePhone(req.getParameter("mobilePhone"))
                 .password(req.getParameter("password"))
-                .role(req.getParameter("role"))
+                .roleId(req.getParameter("role"))
                 .build();
 
         userService.create(createUserDto);

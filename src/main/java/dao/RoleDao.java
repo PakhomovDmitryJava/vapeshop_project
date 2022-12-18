@@ -27,25 +27,29 @@ public class RoleDao implements Dao<Long, Role>{
             """;
 
     private static final String SAVE_SQL = """
-            INSERT INTO roles (role)
+            INSERT INTO roles (role_name)
             VALUES (?);
             """;
 
     private static final String UPDATE_SQL = """
             UPDATE roles
             SET
-            role = ?
+            role_name = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
             SELECT r.id,
-                   r.role
+                   r.role_name
             FROM roles r
                         """;
 
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
             WHERE r.id = ?
+            """;
+
+    public static final String FIND_BY_NAME = """
+            SELECT r.id, r.role_name from roles r where role_name = ?
             """;
 
     public static RoleDao getInstance() {
@@ -67,7 +71,7 @@ public class RoleDao implements Dao<Long, Role>{
     public Role save(Role role) {
         try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, role.getRole());
+            preparedStatement.setString(1, role.getRoleName());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -83,7 +87,7 @@ public class RoleDao implements Dao<Long, Role>{
     public void update(Role role) {
         try (var connetcion = ConnectionManager.get();
              var preparedStatement = connetcion.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, role.getRole());
+            preparedStatement.setString(1, role.getRoleName());
             preparedStatement.setLong(2, role.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -107,11 +111,26 @@ public class RoleDao implements Dao<Long, Role>{
         }
     }
 
+    public Optional<Role> findByName(String name) {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_BY_NAME)) {
+            preparedStatement.setString(1, name);
+            var resultSet = preparedStatement.executeQuery();
+            Role role = null;
+            if (resultSet.next()) {
+                role = buildRole(resultSet);
+            }
+            return Optional.ofNullable(role);
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
     private Role buildRole(ResultSet resultSet) {
         try {
             return Role.builder()
                     .id(resultSet.getLong("id"))
-                    .role(resultSet.getString("role"))
+                    .roleName(resultSet.getString("role_name"))
                     .build();
         } catch (SQLException e) {
             throw new DaoException(e);

@@ -7,5 +7,5 @@ import lombok.Value;
 @Builder
 public class RoleDto {
     String id;
-    String role;
+    String roleName;
 }
